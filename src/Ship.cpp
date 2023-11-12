@@ -15,7 +15,7 @@ void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	MV->translate(0.0f, -0.3f, 0.0f);
 	
 	// Scale the size of the ship:
-	MV->scale(0.5f, 0.5f, 0.5f);
+	MV->scale(0.7f, 0.7f, 0.7f);
 
 	// Rotate the ship about the y axis (it will be facing the wrong direction otherwise)
 	MV->rotate(M_PI, 0, 1, 0);

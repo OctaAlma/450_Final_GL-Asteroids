@@ -20,6 +20,8 @@
 
 using namespace std;
 
+#define NUM_ASTEROID_MODELS 1
+
 GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the resources are loaded from
 
@@ -31,6 +33,7 @@ shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
 shared_ptr<Ship> shape;
 
+vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
 
 static void error_callback(int error, const char *description)
@@ -109,16 +112,22 @@ static void init()
 	prog->setVerbose(false);
 	
 	camera = make_shared<Camera>();
+	camera->setInitDistance(20.0f);
 	
 	shape = make_shared<Ship>();
 	shape->loadMesh(RESOURCE_DIR + "ship.obj");
 	shape->init();
 
-	// Create asteroids:
+	// Initialize asteroid meshes. We only want to load them in once:
+	for (int i = 0; i < NUM_ASTEROID_MODELS; i++){
+		asteroidModels.push_back(make_shared<Shape>());
+		asteroidModels.at(i)->loadMesh(RESOURCE_DIR + "asteroid" + to_string(i + 1) + ".obj");
+		asteroidModels.at(i)->init();
+	}
+	
 	for (int i = 0; i < NUM_ASTEROIDS; i++){
 		asteroids.push_back(make_shared<Asteroid>());
-		asteroids.at(i)->loadMesh(RESOURCE_DIR + "asteroid1.obj");
-		asteroids.at(i)->init();
+		asteroids.at(i)->model = asteroidModels.at(i % NUM_ASTEROID_MODELS);
 	}
 	
 	// Initialize time.
