@@ -1,14 +1,27 @@
 #include "Ship.h"
-#include <algorithm>
-#include <iostream>
-
+#include "ShipKeyframe.h"
 #include "GLSL.h"
 #include "Program.h"
+#include "SplineMatrix.h"
+
+#include <algorithm>
+#include <iostream>
+#include <utility> // For std::pair
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
 using namespace std;
+using namespace glm;
+
+enum ANIMATIONS{
+    NONE,
+    SOMERSAULT,
+    LEFT_ROLL,
+    RIGHT_ROLL
+};
+
+int currAnim = NONE;
 
 // Overrides the original loadMesh(...) function so that the Ship's bounding box can be initialized
 void Ship::loadMesh(const std::string &meshName){
@@ -49,16 +62,6 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 
 void Ship::updatePrevPos(){
 	p_prev = p;
-}
-
-void Ship::performBarrelRoll(char direction)
-{
-	
-}
-
-void Ship::performSomersault()
-{
-
 }
 
 glm::vec3 Ship::getPos(){ return this->p; }
@@ -163,4 +166,149 @@ void Ship::processKeys(bool keyPresses[256]){
 		}
 	}
 
+}
+
+// The following sections are used to create keyframed animations for the ship:
+float umax = 0.0f;
+float smax = 0.0f;
+double tStart = 0.0f;
+double tEnd = 0.0f;
+
+std::vector<std::shared_ptr<ShipKeyframe> > keyframes;
+vector<pair<float,float> > usTable; // A table containing pairs of (u, s)
+
+void createKeyframes(){
+	// We are only going to need 6 keyframes for the somersault and barrel rolls:
+	for (int i = 0; i < 8; i++){
+		keyframes.push_back(std::make_shared<ShipKeyframe>());
+	}
+}
+
+void buildTable()
+{
+	usTable.clear();
+
+	// Set B to be the appropriate matrix:
+	glm::mat4 B = createCatmull();
+	usTable.push_back(make_pair(0.0f, 0.0f));
+
+	// Compute using approximations:
+	for (int i = 0; i < keyframes.size() - 3; i++){	
+
+		glm::mat4 G(0);
+		G[0] = glm::vec4(keyframes.at(0 + i)->getPos(), 0);
+		G[1] = glm::vec4(keyframes.at(1 + i)->getPos(), 0);
+		G[2] = glm::vec4(keyframes.at(2 + i)->getPos(), 0);
+		G[3] = glm::vec4(keyframes.at(3 + i)->getPos(), 0);
+
+		float ua = 0.0f;
+		for (float ub = 0.2f; ub <= 1.0f; ub = ub + 0.2f){
+			glm::vec4 uaVec(1, ua, ua * ua, ua * ua * ua);
+			glm::vec4 ubVec(1, ub, ub * ub, ub * ub * ub);
+			glm::vec3 P_ua = G * B * uaVec;
+			glm::vec3 P_ub = G * B * ubVec;
+			float s = glm::length(P_ua - P_ub);
+			usTable.push_back(make_pair(ub + i, s + usTable.at(usTable.size()-1).second));
+			ua += 0.2f;
+		}
+	}
+
+	smax = usTable.at(usTable.size()-1).second;
+}
+
+// Set the position and rotations of each keyframe in the keyframes vector
+// NOTE: THE QUATERNION ROTATIONS HAVE NOT YET BEEN SET
+void setKeyframes(glm::vec3 p, int animType){
+
+	switch(animType){
+		case (NONE):{
+			break;
+		}
+
+		case(SOMERSAULT):{
+			currAnim = animType;
+			// Control point behind the current position. Same orientation
+			keyframes.at(0)->setPos(p + glm::vec3(0.0f, 0.0f, -1.0f));
+			keyframes.at(0)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+
+			// Control point that is the current position. Same orientation
+			keyframes.at(1)->setPos(p);
+			keyframes.at(1)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+
+			// Control point that is one unit on top and one unit in front. (Ship facing upward)
+			keyframes.at(2)->setPos(p + glm::vec3(0.0f, 1.0f, 1.0f));
+			keyframes.at(2)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+
+			// Control point at the top (Upside down orientation)
+			keyframes.at(3)->setPos(p + glm::vec3(0.0f, 1.0f, 1.0f));
+			keyframes.at(3)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+
+			// Control point that is one unit on top and one unit behind. (Ship facing downward)
+			keyframes.at(4)->setPos(p + glm::vec3(0.0f, 1.0f, -1.0f));
+			keyframes.at(4)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+
+			// Control point that is the current position. Same orientation
+			keyframes.at(5)->setPos(p);
+			keyframes.at(5)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+
+			// Control point in front of the current position. Same orientation
+			keyframes.at(6)->setPos(p + glm::vec3(0.0f, 0.0f, 1.0f));
+			keyframes.at(6)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+			break;
+		}
+	
+		case(LEFT_ROLL):{
+			break;
+		}
+
+		case(RIGHT_ROLL):{
+			break;
+		}
+	}
+
+	if (animType != NONE){
+		buildTable();
+	}
+}
+
+void Ship::performBarrelRoll(char direction)
+{
+	if (keyframes.empty()){ createKeyframes(); }
+}
+
+void Ship::performSomersault()
+{
+	if (keyframes.empty()){ createKeyframes(); }
+
+	if (currAnim == NONE){ setKeyframes(this->p, SOMERSAULT); }
+
+	float umax = keyframes.size();
+	float u = std::fmod(tGlobal, umax);
+	int k = floor(u);
+	float u_hat = u - k; // u_hat is between 0 and 1
+	mat4 B = createCatmull();
+	vec4 uVec(1.0f, u_hat, u_hat * u_hat, u_hat * u_hat * u_hat);
+	mat4 G(0);
+
+	// Define G for rotations
+	G[0] = glm::vec4(keyframes.at((0 + k))->getQuat().x, keyframes.at((0 + k))->getQuat().y, keyframes.at((0 + k))->getQuat().z, keyframes.at((0 + k))->getQuat().w);
+	G[1] = glm::vec4(keyframes.at((1 + k))->getQuat().x, keyframes.at((1 + k))->getQuat().y, keyframes.at((1 + k))->getQuat().z, keyframes.at((1 + k))->getQuat().w);
+	G[2] = glm::vec4(keyframes.at((2 + k))->getQuat().x, keyframes.at((2 + k))->getQuat().y, keyframes.at((2 + k))->getQuat().z, keyframes.at((2 + k))->getQuat().w);
+	G[3] = glm::vec4(keyframes.at((3 + k))->getQuat().x, keyframes.at((3 + k))->getQuat().y, keyframes.at((3 + k))->getQuat().z, keyframes.at((3 + k))->getQuat().w);
+
+	glm::vec4 qVec = G * (B * uVec);
+	glm::quat q(qVec[3], qVec[0], qVec[1], qVec[2]); // Constructor argument order: (w, x, y, z)
+	glm::mat4 E = glm::mat4_cast(glm::normalize(q)); // Creates a rotation matrix
+
+	// Define G for translations
+	G[0] = glm::vec4(keyframes.at((0 + k))->getPos(), 0);
+	G[1] = glm::vec4(keyframes.at((1 + k))->getPos(), 0);
+	G[2] = glm::vec4(keyframes.at((2 + k))->getPos(), 0);
+	G[3] = glm::vec4(keyframes.at((3 + k))->getPos(), 0);
+
+	glm::vec3 pos = G * B * uVec;
+
+	E[3] = glm::vec4(pos, 1.0f); // Puts the position into the last column
+
+	this->p = E * vec4(p, 1.0f);
 }
