@@ -282,7 +282,7 @@ void Ship::performSomersault()
 
 	if (currAnim == NONE){ setKeyframes(this->p, SOMERSAULT); }
 
-	float umax = keyframes.size();
+	float umax = keyframes.size() - 3;
 	float u = std::fmod(tGlobal, umax);
 	int k = floor(u);
 	float u_hat = u - k; // u_hat is between 0 and 1
