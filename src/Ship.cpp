@@ -10,10 +10,7 @@
 
 using namespace std;
 
-
-void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-	MV->pushMatrix();
-	
+void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	// Translate so that the ship intersects with the ground:
 	MV->translate(0.0f, -0.3f, 0.0f);
 	
@@ -26,7 +23,12 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	MV->translate(p_prev);
 	MV->rotate(yaw, 0, 1, 0);
 	MV->translate(p - p_prev);
+}
 
+void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
+	MV->pushMatrix();
+
+	applyMVTransforms(MV);
 	MV->rotate(-roll, 0, 0, 1);
 
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));

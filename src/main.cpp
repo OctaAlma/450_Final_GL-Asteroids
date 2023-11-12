@@ -24,6 +24,7 @@ string RESOURCE_DIR = ""; // Where the resources are loaded from
 
 int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[256] = {0};
+bool thirdPersonCam = true;
 
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
@@ -156,8 +157,13 @@ void render()
 	camera->applyProjectionMatrix(P);
 	MV->pushMatrix();
 	camera->applyViewMatrix(MV);
-	
 	prog->bind();
+
+	if (thirdPersonCam == true){
+		auto E = make_shared<MatrixStack>();
+		shape->applyMVTransforms(E);
+		MV->multMatrix(glm::inverse(E->topMatrix()));
+	}
 
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
