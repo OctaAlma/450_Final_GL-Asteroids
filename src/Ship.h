@@ -12,6 +12,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 extern double tGlobal;
+extern bool drawBoundingBox;
 
 class Ship: public Shape
 {
@@ -29,14 +30,13 @@ class Ship: public Shape
         void moveShip(bool keyPresses[256]);
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void updatePrevPos();
-
+        std::shared_ptr<BoundingBox> bb = NULL;
     private:
         void processKeys(bool keyPresses[256]);
         glm::vec3 p_prev; // The previous position of the ship
         glm::vec3 p; // The position of the ship in space
         glm::vec3 v; // The velocity of the ship
         glm::quat rot;
-
         float roll = 0.0f;
         float yaw = 0.0f;
 };

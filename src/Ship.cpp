@@ -26,8 +26,11 @@ void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-	MV->pushMatrix();
+	if (bb == NULL){
+		bb = make_shared<BoundingBox>(this->posBuf);
+	}
 
+	MV->pushMatrix();
 	applyMVTransforms(MV);
 	MV->rotate(-roll, 0, 0, 1);
 
@@ -39,7 +42,7 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	MV->popMatrix();
 
 	// Updating the previous position here causes
-	//p_prev = p;
+	// p_prev = p;
 }
 
 void Ship::updatePrevPos(){

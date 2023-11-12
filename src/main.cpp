@@ -28,6 +28,7 @@ string RESOURCE_DIR = ""; // Where the resources are loaded from
 int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[512] = {0};
 bool thirdPersonCam = true;
+bool drawBoundingBox = true;
 double tGlobal = 0.0f;
 
 shared_ptr<Program> prog;
@@ -100,7 +101,7 @@ static void init()
 	GLSL::checkVersion();
 	
 	// Set background color
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 	// Enable z-buffer test
 	glEnable(GL_DEPTH_TEST);
 
@@ -219,16 +220,29 @@ void render()
 	// Setup the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	
-	MV->pushMatrix();
-	shape->applyMVTransforms(MV);
-	MV->rotate(-shape->getRoll(), 0, 0, 1);
-	glPushMatrix();
-	glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-	shipBB->draw();
-	glPopMatrix();
-	MV->popMatrix();
+	if (drawBoundingBox){
+		// Draw the ship's bounding box:
+		MV->pushMatrix();
+		shape->applyMVTransforms(MV);
+		MV->rotate(-shape->getRoll(), 0, 0, 1);
+		glPushMatrix();
+		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+		shipBB->draw();
+		glPopMatrix();
+		MV->popMatrix();
 
-	// THIS NEEDS TO BE CALLED AFTER DRAWING THE BOUNDING BOX
+		// Draw each asteroid's bounding box:
+		for (auto a = asteroids.begin(); a != asteroids.end(); ++a){
+			MV->pushMatrix();
+			(*a)->applyMVTransforms(MV);
+			glPushMatrix();
+			glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+			(*a)->bb->draw();
+			glPopMatrix();
+			MV->popMatrix();
+		}
+	}
+	// THIS NEEDS TO BE CALLED AFTER DRAWING THE SHIP AND BOUNDING BOX
 	shape->updatePrevPos();
 
 	glPushMatrix();

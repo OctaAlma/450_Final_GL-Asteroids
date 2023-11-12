@@ -3,6 +3,7 @@
 #define BOUNDING_BOX_H
 
 #include "Shape.h"
+#include "MatrixStack.h"
 #include <memory>
 
 #include <vector>
@@ -16,7 +17,10 @@ struct BoundingBox{
 	BoundingBox(std::vector<float> &posBuf);
     BoundingBox(std::vector<float>* posBuf);
 
+    void updateCoords(std::shared_ptr<MatrixStack> M);
+
     void draw();
+    bool collided(std::shared_ptr<BoundingBox> other);
 };
 
 #endif

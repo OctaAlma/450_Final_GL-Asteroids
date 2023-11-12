@@ -24,6 +24,7 @@
 #define NUM_ASTEROIDS 40
 
 extern double tGlobal;
+extern bool drawBoundingBox;
 
 class Asteroid
 {   
@@ -35,9 +36,10 @@ class Asteroid
         void move();
         glm::vec3 getPos();
         void updatePos(glm::vec3 newPos);
-
+        void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void randomPos();
         void randomDir();
+        std::shared_ptr<BoundingBox> bb = NULL;
     private:
         glm::vec3 pos;
         glm::vec3 dir;

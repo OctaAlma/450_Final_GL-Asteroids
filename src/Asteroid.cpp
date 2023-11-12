@@ -36,10 +36,19 @@ Asteroid::Asteroid(){
     this->size = randomFloat(MIN_ASTEROID_SIZE, MAX_ASTEROID_SIZE);
 }
 
-void Asteroid::drawAsteroid(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-    MV->pushMatrix();
+void Asteroid::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
     MV->translate(this->pos);
     MV->scale(size, size, size);
+}
+
+void Asteroid::drawAsteroid(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
+    
+    if (bb == NULL){
+        bb = std::make_shared<BoundingBox>(this->model->getPosBuf());
+    }
+
+    MV->pushMatrix();
+    applyMVTransforms(MV);
     
     glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	glUniform3f(prog->getUniform("kd"), color[0], color[1], color[2]);

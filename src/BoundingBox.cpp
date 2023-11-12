@@ -42,6 +42,11 @@ BoundingBox::BoundingBox(std::vector<float>* posBuf){
     }	
 }
 
+void BoundingBox::updateCoords(std::shared_ptr<MatrixStack> M){
+    minCoords = M->topMatrix() * glm::vec4(minCoords, 1.0f);
+    maxCoords = M->topMatrix() * glm::vec4(maxCoords, 1.0f);
+}
+
 void BoundingBox::draw(){
     // Draw frame
 	glLineWidth(2);
@@ -105,3 +110,14 @@ void BoundingBox::draw(){
     glEnd();
 }
 
+bool BoundingBox::collided(std::shared_ptr<BoundingBox> other){ 
+
+    // xmax1 >= xmin2 and xmax2 >= xmin1
+    bool cond1 = (maxCoords.x >= other->minCoords.x && other->maxCoords.x >= minCoords.x);
+    // ymax1 >= ymin2 and ymax2 >= ymin1
+    bool cond2 = (maxCoords.y >= other->minCoords.y && other->maxCoords.y >= minCoords.y);
+    // zmax1 >= zmin2 and zmax2 >= zmin1
+    bool cond3 = (maxCoords.z >= other->minCoords.z && other->maxCoords.z >= minCoords.z);
+
+    return cond1 && cond2 && cond3; 
+}
