@@ -19,17 +19,17 @@ class Ship: public Shape
     public:
         Ship(){}
         ~Ship(){}
-
+        void loadMesh(const std::string &meshName);
         void drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV);
         void performBarrelRoll(char direction);
         void performSomersault();
         glm::vec3 getPos();
         glm::vec3 getVel();
         float getRoll() {return this->roll; }
-
         void moveShip(bool keyPresses[256]);
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void updatePrevPos();
+        
         std::shared_ptr<BoundingBox> bb = NULL;
     private:
         void processKeys(bool keyPresses[256]);

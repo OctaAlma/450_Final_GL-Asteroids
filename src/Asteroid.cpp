@@ -17,7 +17,7 @@ float randomFloat(float a, float b) {
     return a + r;
 }
 
-Asteroid::Asteroid(){
+Asteroid::Asteroid(std::shared_ptr<Shape> &model){
     this->pos = glm::vec3(randomFloat(-MAX_X, MAX_X), 0, randomFloat(-MAX_Z, MAX_Z));
     this->dir = glm::normalize(glm::vec3((float) rand() / (RAND_MAX), 0.0f, (float) rand() / (RAND_MAX)));
     this->color = glm::vec3(randomFloat(0.0f, 1.0f), randomFloat(0.0f, 1.0f), randomFloat(0.0f, 1.0f));
@@ -34,6 +34,8 @@ Asteroid::Asteroid(){
 
     this->speed = randomFloat(MIN_ASTEROID_SPEED, MAX_ASTEROID_SPEED);
     this->size = randomFloat(MIN_ASTEROID_SIZE, MAX_ASTEROID_SIZE);
+    this->model = model;
+    this->bb = std::make_shared<BoundingBox>(this->model->getPosBuf());
 }
 
 void Asteroid::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
@@ -42,11 +44,6 @@ void Asteroid::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 }
 
 void Asteroid::drawAsteroid(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-    
-    if (bb == NULL){
-        bb = std::make_shared<BoundingBox>(this->model->getPosBuf());
-    }
-
     MV->pushMatrix();
     applyMVTransforms(MV);
     

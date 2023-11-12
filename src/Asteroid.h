@@ -21,7 +21,7 @@
 #define MAX_ASTEROID_SIZE 0.01f
 #define MIN_ASTEROID_SIZE 0.001f
 
-#define NUM_ASTEROIDS 40
+#define NUM_ASTEROIDS 10
 
 extern double tGlobal;
 extern bool drawBoundingBox;
@@ -29,7 +29,7 @@ extern bool drawBoundingBox;
 class Asteroid
 {   
     public:
-        Asteroid();
+        Asteroid(std::shared_ptr<Shape> &model);
         ~Asteroid(){}
         std::shared_ptr<Shape> model;
         void drawAsteroid(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV);

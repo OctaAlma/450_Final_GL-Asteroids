@@ -10,6 +10,12 @@
 
 using namespace std;
 
+// Overrides the original loadMesh(...) function so that the Ship's bounding box can be initialized
+void Ship::loadMesh(const std::string &meshName){
+	Shape::loadMesh(meshName);  
+	bb = make_shared<BoundingBox>(this->posBuf);
+}
+
 void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	// Translate so that the ship intersects with the ground:
 	MV->translate(0.0f, -0.3f, 0.0f);
@@ -26,10 +32,6 @@ void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-	if (bb == NULL){
-		bb = make_shared<BoundingBox>(this->posBuf);
-	}
-
 	MV->pushMatrix();
 	applyMVTransforms(MV);
 	MV->rotate(-roll, 0, 0, 1);
@@ -51,7 +53,7 @@ void Ship::updatePrevPos(){
 
 void Ship::performBarrelRoll(char direction)
 {
-
+	
 }
 
 void Ship::performSomersault()

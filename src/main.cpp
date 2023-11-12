@@ -27,9 +27,12 @@ string RESOURCE_DIR = ""; // Where the resources are loaded from
 
 int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[512] = {0};
+double tGlobal = 0.0f;
+
 bool thirdPersonCam = true;
 bool drawBoundingBox = true;
-double tGlobal = 0.0f;
+bool drawGrid = true;
+bool drawAxisFrame = true;
 
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
@@ -37,8 +40,6 @@ shared_ptr<Ship> shape;
 
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
-
-shared_ptr<BoundingBox> shipBB;
 
 void resetAsteroidPositions(){
 	for (auto a = asteroids.begin(); a != asteroids.end(); ++a){
@@ -129,9 +130,6 @@ static void init()
 	shape->loadMesh(RESOURCE_DIR + "ship.obj");
 	shape->init();
 
-	vector<float>* shipPosBuf = shape->getPosBuf();
-	shipBB = make_shared<BoundingBox>(*shipPosBuf);
-
 	// Initialize asteroid meshes. We only want to load them in once:
 	for (int i = 0; i < NUM_ASTEROID_MODELS; i++){
 		asteroidModels.push_back(make_shared<Shape>());
@@ -140,8 +138,7 @@ static void init()
 	}
 	
 	for (int i = 0; i < NUM_ASTEROIDS; i++){
-		asteroids.push_back(make_shared<Asteroid>());
-		asteroids.at(i)->model = asteroidModels.at(i % NUM_ASTEROID_MODELS);
+		asteroids.push_back(make_shared<Asteroid>(asteroidModels.at(i % NUM_ASTEROID_MODELS)));
 	}
 	
 	// Initialize time.
@@ -227,7 +224,7 @@ void render()
 		MV->rotate(-shape->getRoll(), 0, 0, 1);
 		glPushMatrix();
 		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-		shipBB->draw();
+		shape->bb->draw();
 		glPopMatrix();
 		MV->popMatrix();
 
@@ -249,46 +246,46 @@ void render()
 	glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
 	
 	// Draw frame
-	glLineWidth(2);
-	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);
-	glVertex3f(0, 0, 0);
-	glVertex3f(1, 0, 0);
-	glColor3f(0, 1, 0);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, 1, 0);
-	glColor3f(0, 0, 1);
-	glVertex3f(0, 0, 0);
-	glVertex3f(0, 0, 1);
-	glEnd();
-	glLineWidth(1);
+	if (drawAxisFrame){
+		glLineWidth(2);
+		glBegin(GL_LINES);
+		glColor3f(1, 0, 0);
+		glVertex3f(0, 0, 0);
+		glVertex3f(1, 0, 0);
+		glColor3f(0, 1, 0);
+		glVertex3f(0, 0, 0);
+		glVertex3f(0, 1, 0);
+		glColor3f(0, 0, 1);
+		glVertex3f(0, 0, 0);
+		glVertex3f(0, 0, 1);
+		glEnd();
+		glLineWidth(1);
+	}
 	
 	// Draw grid
-	// float gridSizeHalf = 20.0f;
-	// int gridNx = 40;
-	// int gridNz = 40;
+	if (drawGrid){
+		float gridSizeHalf = 80.0f;
+		int gridNx = 20;
+		int gridNz = 20;
 
-	float gridSizeHalf = 80.0f;
-	int gridNx = 20;
-	int gridNz = 20;
-
-	glLineWidth(1);
-	// glColor3f(0.8f, 0.8f, 0.8f);
-	glColor3f(0.1f, 0.4f, 0.1f);
-	glBegin(GL_LINES);
-	for(int i = 0; i < gridNx+1; ++i) {
-		float alpha = i / (float)gridNx;
-		float x = (1.0f - alpha) * (-gridSizeHalf) + alpha * gridSizeHalf;
-		glVertex3f(x, 0, -gridSizeHalf);
-		glVertex3f(x, 0,  gridSizeHalf);
+		glLineWidth(1);
+		// glColor3f(0.8f, 0.8f, 0.8f);
+		glColor3f(0.1f, 0.4f, 0.1f);
+		glBegin(GL_LINES);
+		for(int i = 0; i < gridNx+1; ++i) {
+			float alpha = i / (float)gridNx;
+			float x = (1.0f - alpha) * (-gridSizeHalf) + alpha * gridSizeHalf;
+			glVertex3f(x, 0, -gridSizeHalf);
+			glVertex3f(x, 0,  gridSizeHalf);
+		}
+		for(int i = 0; i < gridNz+1; ++i) {
+			float alpha = i / (float)gridNz;
+			float z = (1.0f - alpha) * (-gridSizeHalf) + alpha * gridSizeHalf;
+			glVertex3f(-gridSizeHalf, 0, z);
+			glVertex3f( gridSizeHalf, 0, z);
+		}
+		glEnd();
 	}
-	for(int i = 0; i < gridNz+1; ++i) {
-		float alpha = i / (float)gridNz;
-		float z = (1.0f - alpha) * (-gridSizeHalf) + alpha * gridSizeHalf;
-		glVertex3f(-gridSizeHalf, 0, z);
-		glVertex3f( gridSizeHalf, 0, z);
-	}
-	glEnd();
 	
 	// Pop modelview matrix
 	glPopMatrix();
