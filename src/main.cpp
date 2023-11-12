@@ -26,8 +26,9 @@ GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the resources are loaded from
 
 int keyPresses[256] = {0}; // only for English keyboards!
-bool isPressed[256] = {0};
+bool isPressed[512] = {0};
 bool thirdPersonCam = true;
+double tGlobal = 0.0f;
 
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
@@ -35,6 +36,15 @@ shared_ptr<Ship> shape;
 
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
+
+shared_ptr<BoundingBox> shipBB;
+
+void resetAsteroidPositions(){
+	for (auto a = asteroids.begin(); a != asteroids.end(); ++a){
+		(*a)->randomDir();
+		(*a)->randomPos();
+	}
+}
 
 static void error_callback(int error, const char *description)
 {
@@ -118,6 +128,9 @@ static void init()
 	shape->loadMesh(RESOURCE_DIR + "ship.obj");
 	shape->init();
 
+	vector<float>* shipPosBuf = shape->getPosBuf();
+	shipBB = make_shared<BoundingBox>(*shipPosBuf);
+
 	// Initialize asteroid meshes. We only want to load them in once:
 	for (int i = 0; i < NUM_ASTEROID_MODELS; i++){
 		asteroidModels.push_back(make_shared<Shape>());
@@ -143,6 +156,7 @@ void render()
 {
 	// Update time.
 	double t = glfwGetTime();
+	tGlobal = t;
 
 	shape->moveShip(isPressed);
 	
@@ -183,6 +197,7 @@ void render()
 	if (thirdPersonCam == true){
 		auto E = make_shared<MatrixStack>();
 		shape->applyMVTransforms(E);
+		MV->rotate(M_PI, 0,1,0);
 		MV->multMatrix(glm::inverse(E->topMatrix()));
 	}
 
@@ -203,6 +218,19 @@ void render()
 	
 	// Setup the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
+	
+	MV->pushMatrix();
+	shape->applyMVTransforms(MV);
+	MV->rotate(-shape->getRoll(), 0, 0, 1);
+	glPushMatrix();
+	glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+	shipBB->draw();
+	glPopMatrix();
+	MV->popMatrix();
+
+	// THIS NEEDS TO BE CALLED AFTER DRAWING THE BOUNDING BOX
+	shape->updatePrevPos();
+
 	glPushMatrix();
 	glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
 	

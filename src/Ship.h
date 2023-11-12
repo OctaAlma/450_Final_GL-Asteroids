@@ -11,6 +11,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+extern double tGlobal;
+
 class Ship: public Shape
 {
     public:
@@ -22,9 +24,11 @@ class Ship: public Shape
         void performSomersault();
         glm::vec3 getPos();
         glm::vec3 getVel();
+        float getRoll() {return this->roll; }
 
         void moveShip(bool keyPresses[256]);
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
+        void updatePrevPos();
 
     private:
         void processKeys(bool keyPresses[256]);

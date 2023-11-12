@@ -24,6 +24,7 @@ public:
 	void fitToUnitBox();
 	void init();
 	virtual void draw(const std::shared_ptr<Program> prog) const;
+	std::vector<float>* getPosBuf(){ return &posBuf; }
 	
 protected:
 	std::vector<float> posBuf;

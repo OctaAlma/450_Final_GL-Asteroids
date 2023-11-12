@@ -74,3 +74,21 @@ glm::vec3 Asteroid::getPos(){
 void Asteroid::updatePos(glm::vec3 newPos){
     this->pos = newPos;
 }
+
+void Asteroid::randomPos(){
+    this->pos = glm::vec3(randomFloat(-MAX_X, MAX_X), 0, randomFloat(-MAX_Z, MAX_Z));
+}
+
+void Asteroid::randomDir(){
+    this->dir = glm::normalize(glm::vec3((float) rand() / (RAND_MAX), 0.0f, (float) rand() / (RAND_MAX)));
+    bool zNeg = rand() % 2;
+    bool xNeg = rand() % 2;
+
+    if (zNeg){
+        dir[2] *= -1.0f;
+    }
+
+    if (xNeg){
+        dir[0] *= -1.0f;
+    }
+}

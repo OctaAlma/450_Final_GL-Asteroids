@@ -38,6 +38,11 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 
 	MV->popMatrix();
 
+	// Updating the previous position here causes
+	//p_prev = p;
+}
+
+void Ship::updatePrevPos(){
 	p_prev = p;
 }
 

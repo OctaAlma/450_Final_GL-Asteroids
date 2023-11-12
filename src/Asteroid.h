@@ -23,6 +23,8 @@
 
 #define NUM_ASTEROIDS 40
 
+extern double tGlobal;
+
 class Asteroid
 {   
     public:
@@ -33,6 +35,9 @@ class Asteroid
         void move();
         glm::vec3 getPos();
         void updatePos(glm::vec3 newPos);
+
+        void randomPos();
+        void randomDir();
     private:
         glm::vec3 pos;
         glm::vec3 dir;
