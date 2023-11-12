@@ -57,10 +57,10 @@ RM = /Applications/CMake.app/Contents/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/octaalma/Desktop/CSCE450/Final/Final
+CMAKE_SOURCE_DIR = /Users/octaalma/Desktop/CSCE450/Final/450-Final
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/octaalma/Desktop/CSCE450/Final/Final/build
+CMAKE_BINARY_DIR = /Users/octaalma/Desktop/CSCE450/Final/450-Final/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,9 +132,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/octaalma/Desktop/CSCE450/Final/Final/build/CMakeFiles /Users/octaalma/Desktop/CSCE450/Final/Final/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/octaalma/Desktop/CSCE450/Final/450-Final/build/CMakeFiles /Users/octaalma/Desktop/CSCE450/Final/450-Final/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/octaalma/Desktop/CSCE450/Final/Final/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/octaalma/Desktop/CSCE450/Final/450-Final/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -212,6 +212,30 @@ glfw: cmake_check_build_system
 glfw/fast:
 	$(MAKE) $(MAKESILENT) -f /Users/octaalma/Desktop/CSCE450/Libraries/glfw-3.3.8/debug/src/CMakeFiles/glfw.dir/build.make /Users/octaalma/Desktop/CSCE450/Libraries/glfw-3.3.8/debug/src/CMakeFiles/glfw.dir/build
 .PHONY : glfw/fast
+
+src/Asteroid.o: src/Asteroid.cpp.o
+.PHONY : src/Asteroid.o
+
+# target to build an object file
+src/Asteroid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A1.dir/build.make CMakeFiles/A1.dir/src/Asteroid.cpp.o
+.PHONY : src/Asteroid.cpp.o
+
+src/Asteroid.i: src/Asteroid.cpp.i
+.PHONY : src/Asteroid.i
+
+# target to preprocess a source file
+src/Asteroid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A1.dir/build.make CMakeFiles/A1.dir/src/Asteroid.cpp.i
+.PHONY : src/Asteroid.cpp.i
+
+src/Asteroid.s: src/Asteroid.cpp.s
+.PHONY : src/Asteroid.s
+
+# target to generate assembly for a file
+src/Asteroid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/A1.dir/build.make CMakeFiles/A1.dir/src/Asteroid.cpp.s
+.PHONY : src/Asteroid.cpp.s
 
 src/Camera.o: src/Camera.cpp.o
 .PHONY : src/Camera.o
@@ -397,6 +421,9 @@ help:
 	@echo "... update_mappings"
 	@echo "... A1"
 	@echo "... glfw"
+	@echo "... src/Asteroid.o"
+	@echo "... src/Asteroid.i"
+	@echo "... src/Asteroid.s"
 	@echo "... src/Camera.o"
 	@echo "... src/Camera.i"
 	@echo "... src/Camera.s"

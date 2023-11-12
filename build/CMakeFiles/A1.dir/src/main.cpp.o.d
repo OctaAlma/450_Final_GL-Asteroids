@@ -1,5 +1,5 @@
 CMakeFiles/A1.dir/src/main.cpp.o: \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/main.cpp \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/main.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__assert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__config \
@@ -1052,14 +1052,16 @@ CMakeFiles/A1.dir/src/main.cpp.o: \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../mat4x3.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/type_ptr.inl \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/quaternion.hpp \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Camera.h \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/GLSL.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Camera.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/GLSL.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/sstream \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Program.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Program.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/map \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__tree \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/MatrixStack.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/MatrixStack.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/stack \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/deque \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Shape.h \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Ship.h
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Shape.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Ship.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/BoundingBox.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Asteroid.h

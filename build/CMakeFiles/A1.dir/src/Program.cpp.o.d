@@ -1,6 +1,6 @@
 CMakeFiles/A1.dir/src/Program.cpp.o: \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Program.cpp \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Program.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Program.cpp \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Program.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/map \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__algorithm/equal.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__algorithm/comp.h \
@@ -801,5 +801,5 @@ CMakeFiles/A1.dir/src/Program.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/cstdarg \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/cassert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/assert.h \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/GLSL.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/GLSL.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/sstream

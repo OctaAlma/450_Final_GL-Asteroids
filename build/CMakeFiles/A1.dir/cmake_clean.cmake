@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "A1"
   "A1.pdb"
+  "CMakeFiles/A1.dir/src/Asteroid.cpp.o"
+  "CMakeFiles/A1.dir/src/Asteroid.cpp.o.d"
   "CMakeFiles/A1.dir/src/Camera.cpp.o"
   "CMakeFiles/A1.dir/src/Camera.cpp.o.d"
   "CMakeFiles/A1.dir/src/GLSL.cpp.o"

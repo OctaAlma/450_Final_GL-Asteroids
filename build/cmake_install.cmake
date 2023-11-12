@@ -1,4 +1,4 @@
-# Install script for directory: /Users/octaalma/Desktop/CSCE450/Final/Final
+# Install script for directory: /Users/octaalma/Desktop/CSCE450/Final/450-Final
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/octaalma/Desktop/CSCE450/Final/Final/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/octaalma/Desktop/CSCE450/Final/450-Final/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

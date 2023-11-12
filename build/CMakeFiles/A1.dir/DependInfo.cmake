@@ -8,13 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/Camera.cpp" "CMakeFiles/A1.dir/src/Camera.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Camera.cpp.o.d"
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/GLSL.cpp" "CMakeFiles/A1.dir/src/GLSL.cpp.o" "gcc" "CMakeFiles/A1.dir/src/GLSL.cpp.o.d"
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/MatrixStack.cpp" "CMakeFiles/A1.dir/src/MatrixStack.cpp.o" "gcc" "CMakeFiles/A1.dir/src/MatrixStack.cpp.o.d"
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/Program.cpp" "CMakeFiles/A1.dir/src/Program.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Program.cpp.o.d"
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/Shape.cpp" "CMakeFiles/A1.dir/src/Shape.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Shape.cpp.o.d"
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/Ship.cpp" "CMakeFiles/A1.dir/src/Ship.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Ship.cpp.o.d"
-  "/Users/octaalma/Desktop/CSCE450/Final/Final/src/main.cpp" "CMakeFiles/A1.dir/src/main.cpp.o" "gcc" "CMakeFiles/A1.dir/src/main.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Asteroid.cpp" "CMakeFiles/A1.dir/src/Asteroid.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Asteroid.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Camera.cpp" "CMakeFiles/A1.dir/src/Camera.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Camera.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/GLSL.cpp" "CMakeFiles/A1.dir/src/GLSL.cpp.o" "gcc" "CMakeFiles/A1.dir/src/GLSL.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/MatrixStack.cpp" "CMakeFiles/A1.dir/src/MatrixStack.cpp.o" "gcc" "CMakeFiles/A1.dir/src/MatrixStack.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Program.cpp" "CMakeFiles/A1.dir/src/Program.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Program.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Shape.cpp" "CMakeFiles/A1.dir/src/Shape.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Shape.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Ship.cpp" "CMakeFiles/A1.dir/src/Ship.cpp.o" "gcc" "CMakeFiles/A1.dir/src/Ship.cpp.o.d"
+  "/Users/octaalma/Desktop/CSCE450/Final/450-Final/src/main.cpp" "CMakeFiles/A1.dir/src/main.cpp.o" "gcc" "CMakeFiles/A1.dir/src/main.cpp.o.d"
   )
 
 # Targets to which this target links.

@@ -16,6 +16,7 @@
 #include "MatrixStack.h"
 #include "Shape.h"
 #include "Ship.h"
+#include "Asteroid.h"
 
 using namespace std;
 
@@ -29,6 +30,8 @@ bool thirdPersonCam = true;
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
 shared_ptr<Ship> shape;
+
+vector<shared_ptr<Asteroid> > asteroids;
 
 static void error_callback(int error, const char *description)
 {
@@ -110,6 +113,13 @@ static void init()
 	shape = make_shared<Ship>();
 	shape->loadMesh(RESOURCE_DIR + "ship.obj");
 	shape->init();
+
+	// Create asteroids:
+	for (int i = 0; i < NUM_ASTEROIDS; i++){
+		asteroids.push_back(make_shared<Asteroid>());
+		asteroids.at(i)->loadMesh(RESOURCE_DIR + "asteroid1.obj");
+		asteroids.at(i)->init();
+	}
 	
 	// Initialize time.
 	glfwSetTime(0.0);
@@ -159,15 +169,19 @@ void render()
 	camera->applyViewMatrix(MV);
 	prog->bind();
 
+	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
+
 	if (thirdPersonCam == true){
 		auto E = make_shared<MatrixStack>();
 		shape->applyMVTransforms(E);
 		MV->multMatrix(glm::inverse(E->topMatrix()));
 	}
 
-	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
-	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
-	glUniform3f(prog->getUniform("kd"), 0.3f, 0.3f, 0.3f);
+	for (int i = 0; i < asteroids.size(); i++){
+		asteroids.at(i)->move();
+		asteroids.at(i)->drawAsteroid(prog, MV);
+	}
+
 	shape->drawShip(prog, MV);
 	prog->unbind();
 	

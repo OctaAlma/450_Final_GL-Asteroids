@@ -1,5 +1,5 @@
 CMakeFiles/A1.dir/src/Camera.cpp.o: \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Camera.cpp \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Camera.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/cmath \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__assert \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__config \
@@ -949,7 +949,7 @@ CMakeFiles/A1.dir/src/Camera.cpp.o: \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../geometric.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../trigonometric.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../matrix.hpp \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Camera.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Camera.h \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/glm.hpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/cfloat \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/float.h \
@@ -965,7 +965,7 @@ CMakeFiles/A1.dir/src/Camera.cpp.o: \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../vector_relational.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../integer.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/gtc/../detail/func_integer.inl \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/MatrixStack.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/MatrixStack.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/stack \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/deque \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/fwd.hpp

@@ -1,6 +1,6 @@
 CMakeFiles/A1.dir/src/Shape.cpp.o: \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Shape.cpp \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Shape.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Shape.cpp \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Shape.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/string \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__algorithm/max.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__algorithm/comp.h \
@@ -792,14 +792,14 @@ CMakeFiles/A1.dir/src/Shape.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/_types/_nl_item.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__bsd_locale_defaults.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/cstdarg \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/GLSL.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/GLSL.h \
   /Users/octaalma/Desktop/CSCE450/Libraries/glew-2.1.0/include/GL/glew.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/Library/Frameworks/OpenGL.framework/Headers/glu.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/Library/Frameworks/OpenGL.framework/Headers/OpenGLAvailability.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/os/availability.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/System/Library/Frameworks/OpenGL.framework/Headers/gl.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/sstream \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/Program.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/Program.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/map \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__tree \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/glm.hpp \
@@ -957,7 +957,7 @@ CMakeFiles/A1.dir/src/Shape.cpp.o: \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/vector_relational.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/integer.hpp \
   /Users/octaalma/Desktop/CSCE450/Libraries/glm-master/glm/detail/func_integer.inl \
-  /Users/octaalma/Desktop/CSCE450/Final/Final/src/tiny_obj_loader.h \
+  /Users/octaalma/Desktop/CSCE450/Final/450-Final/src/tiny_obj_loader.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/fstream \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/filesystem \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk/usr/include/c++/v1/__filesystem/copy_options.h \
