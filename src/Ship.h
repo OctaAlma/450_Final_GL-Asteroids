@@ -32,6 +32,7 @@ class Ship: public Shape
         
         std::shared_ptr<BoundingBox> bb = NULL;
     private:
+        glm::mat4 generateEMatrix();
         void processKeys(bool keyPresses[256]);
         glm::vec3 p_prev; // The previous position of the ship
         glm::vec3 p; // The position of the ship in space

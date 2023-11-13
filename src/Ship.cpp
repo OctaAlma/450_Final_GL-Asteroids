@@ -45,9 +45,18 @@ void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
+	
+	if (currAnim == NONE){
+		performSomersault();
+	}
+
 	MV->pushMatrix();
 	applyMVTransforms(MV);
 	MV->rotate(-roll, 0, 0, 1);
+
+	if (currAnim != NONE){
+		MV->multMatrix(generateEMatrix());
+	}
 
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 	glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
@@ -216,9 +225,12 @@ void buildTable()
 	smax = usTable.at(usTable.size()-1).second;
 }
 
+#define UNIT 15.0f
+
 // Set the position and rotations of each keyframe in the keyframes vector
 // NOTE: THE QUATERNION ROTATIONS HAVE NOT YET BEEN SET
 void setKeyframes(glm::vec3 p, int animType){
+	glm::vec3 xAxis = glm::vec3(1, 0, 0);
 
 	switch(animType){
 		case (NONE):{
@@ -228,32 +240,32 @@ void setKeyframes(glm::vec3 p, int animType){
 		case(SOMERSAULT):{
 			currAnim = animType;
 			// Control point behind the current position. Same orientation
-			keyframes.at(0)->setPos(p + glm::vec3(0.0f, 0.0f, -1.0f));
-			keyframes.at(0)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-
+			keyframes.at(0)->setPos(p);
+			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, xAxis));
+			
 			// Control point that is the current position. Same orientation
 			keyframes.at(1)->setPos(p);
-			keyframes.at(1)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, xAxis));
 
 			// Control point that is one unit on top and one unit in front. (Ship facing upward)
-			keyframes.at(2)->setPos(p + glm::vec3(0.0f, 1.0f, 1.0f));
-			keyframes.at(2)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+			keyframes.at(2)->setPos(p + glm::vec3(0.0f, UNIT / 2.0f, UNIT / 2.0f));
+			keyframes.at(2)->setQuat(glm::angleAxis(-(float)M_PI_2, xAxis));
 
 			// Control point at the top (Upside down orientation)
-			keyframes.at(3)->setPos(p + glm::vec3(0.0f, 1.0f, 1.0f));
-			keyframes.at(3)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+			keyframes.at(3)->setPos(p + glm::vec3(0.0f, UNIT, 0.0f));
+			keyframes.at(3)->setQuat(glm::angleAxis(-(float)M_PI, xAxis));
 
 			// Control point that is one unit on top and one unit behind. (Ship facing downward)
-			keyframes.at(4)->setPos(p + glm::vec3(0.0f, 1.0f, -1.0f));
-			keyframes.at(4)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+			keyframes.at(4)->setPos(p + glm::vec3(0.0f, UNIT / 2.0f, -UNIT / 2.0f));
+			keyframes.at(4)->setQuat(glm::angleAxis(-(float)M_PI -(float)M_PI_2, xAxis));
 
 			// Control point that is the current position. Same orientation
 			keyframes.at(5)->setPos(p);
-			keyframes.at(5)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-
+			keyframes.at(5)->setQuat(glm::angleAxis(0.0f, xAxis));
+			
 			// Control point in front of the current position. Same orientation
-			keyframes.at(6)->setPos(p + glm::vec3(0.0f, 0.0f, 1.0f));
-			keyframes.at(6)->setQuat(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+			keyframes.at(6)->setPos(p);
+			keyframes.at(6)->setQuat(glm::angleAxis(0.0f, xAxis));
 			break;
 		}
 	
@@ -267,23 +279,19 @@ void setKeyframes(glm::vec3 p, int animType){
 	}
 
 	if (animType != NONE){
+		for (int i = 0; i < keyframes.size() - 1; i++){
+			if (dot(keyframes.at(i)->getQuat(), keyframes.at(i + 1)->getQuat()) <= 0.0f){
+				keyframes.at(i + 1)->setQuat(-1.0f * keyframes.at(i + 1)->getQuat());
+			}
+		}
+
 		buildTable();
 	}
 }
 
-void Ship::performBarrelRoll(char direction)
-{
-	if (keyframes.empty()){ createKeyframes(); }
-}
-
-void Ship::performSomersault()
-{
-	if (keyframes.empty()){ createKeyframes(); }
-
-	if (currAnim == NONE){ setKeyframes(this->p, SOMERSAULT); }
-
+glm::mat4 Ship::generateEMatrix(){
 	umax = keyframes.size() - 3;
-	float u = std::fmod(tGlobal, umax);
+	float u = std::fmod(tGlobal * 2.0f, umax);
 	int k = floor(u);
 	float u_hat = u - k; // u_hat is between 0 and 1
 	mat4 B = createCatmull();
@@ -310,5 +318,17 @@ void Ship::performSomersault()
 
 	E[3] = glm::vec4(pos, 1.0f); // Puts the position into the last column
 
-	this->p = E * vec4(p, 1.0f);
+	return E;
+}
+
+void Ship::performBarrelRoll(char direction)
+{
+	if (keyframes.empty()){ createKeyframes(); }
+}
+
+void Ship::performSomersault()
+{
+	if (keyframes.empty()){ createKeyframes(); }
+
+	if (currAnim == NONE){ setKeyframes(this->p, SOMERSAULT); }
 }
