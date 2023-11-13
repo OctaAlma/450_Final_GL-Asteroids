@@ -23,6 +23,15 @@ enum ANIMATIONS{
 
 int currAnim = NONE;
 
+// The following sections are used to create keyframed animations for the ship:
+float umax = 0.0f;
+float smax = 0.0f;
+double tStart = 0.0f;
+double tEnd = 0.0f;
+
+std::vector<std::shared_ptr<ShipKeyframe> > keyframes;
+vector<pair<float,float> > usTable; // A table containing pairs of (u, s)
+
 // Overrides the original loadMesh(...) function so that the Ship's bounding box can be initialized
 void Ship::loadMesh(const std::string &meshName){
 	Shape::loadMesh(meshName);  
@@ -45,17 +54,18 @@ void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-	
-	if (currAnim == NONE){
-		performSomersault();
+
+	if ((tGlobal - tStart) * (2.0f + abs(v[2])) > (tEnd - tStart)){
+		currAnim = NONE;
 	}
 
 	MV->pushMatrix();
 	applyMVTransforms(MV);
-	MV->rotate(-roll, 0, 0, 1);
 
 	if (currAnim != NONE){
 		MV->multMatrix(generateEMatrix());
+	}else{
+		MV->rotate(-roll, 0, 0, 1);
 	}
 
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
@@ -87,13 +97,19 @@ void Ship::moveShip(bool keyPresses[256]){
 }
 
 void Ship::processKeys(bool keyPresses[256]){
-	bool spacePressed, wPressed, aPressed, dPressed, sPressed;
+	bool wPressed, aPressed, dPressed, sPressed;
 
-	sPressed = spacePressed = wPressed = aPressed = dPressed = false;
+	sPressed = wPressed = aPressed = dPressed = false;
 
-	// note: 32 is the space key
+	if (keyPresses[32]){ // note: 32 is the space key
+		if (currAnim == NONE){
+			tStart = tGlobal;
+			tEnd = tGlobal + 4.0;
+			performSomersault();
+		}
+	}
 	
-	if (keyPresses[(int)'w'] || keyPresses[(int)'W']){
+	if ((currAnim == NONE) && (keyPresses[(int)'w'] || keyPresses[(int)'W'])){
 		wPressed = true;
 		v[2] += 0.01f;
 
@@ -102,7 +118,7 @@ void Ship::processKeys(bool keyPresses[256]){
 		}
 	}
 
-	if (keyPresses[(int)'s'] || keyPresses[(int)'S']){
+	if ((currAnim == NONE) && (keyPresses[(int)'s'] || keyPresses[(int)'S'])){
 		sPressed = true;
 		v[2] -= 0.01f;
 
@@ -111,7 +127,7 @@ void Ship::processKeys(bool keyPresses[256]){
 		}
 	}
 
-	if (keyPresses[(int)'d'] || keyPresses[(int)'D']){
+	if ((currAnim == NONE) && (keyPresses[(int)'d'] || keyPresses[(int)'D'])){
 		aPressed = true;
 		this->roll -= 0.1f;
 
@@ -122,7 +138,7 @@ void Ship::processKeys(bool keyPresses[256]){
 		yaw += 0.05f * roll;
 	}
 
-	if (keyPresses[(int)'a'] || keyPresses[(int)'A']){
+	if ((currAnim == NONE) && (keyPresses[(int)'a'] || keyPresses[(int)'A'])){
 		dPressed = true;
 		this->roll += 0.1f;
 
@@ -133,6 +149,7 @@ void Ship::processKeys(bool keyPresses[256]){
 		yaw += 0.05f * roll;
 	}
 
+	// Resets the roll angle back to 0:
 	if (!aPressed && !dPressed){
 		if (roll != 0.0f){
 			if (roll < 0.0f){
@@ -147,7 +164,8 @@ void Ship::processKeys(bool keyPresses[256]){
 		}
 	}
 
-	if (!sPressed && !wPressed){
+	// Resets the forward velocity to 0:
+	if (!sPressed && !wPressed && (currAnim == NONE)){
 		if (v[2] != 0.0f){
 			if (v[2] < 0.0f){
 				v[2] += 0.007f;
@@ -161,7 +179,8 @@ void Ship::processKeys(bool keyPresses[256]){
 		}
 	}
 
-	if (!aPressed && !dPressed){
+	// Resets the left/right velocity to 0:
+	if (!aPressed && !dPressed && (currAnim == NONE)){
 		if (v[1] != 0.0f){
 			if (v[1] < 0.0f){
 				v[1] += 0.007f;
@@ -177,20 +196,13 @@ void Ship::processKeys(bool keyPresses[256]){
 
 }
 
-// The following sections are used to create keyframed animations for the ship:
-float umax = 0.0f;
-float smax = 0.0f;
-double tStart = 0.0f;
-double tEnd = 0.0f;
-
-std::vector<std::shared_ptr<ShipKeyframe> > keyframes;
-vector<pair<float,float> > usTable; // A table containing pairs of (u, s)
-
 void createKeyframes(){
 	// We are only going to need 6 keyframes for the somersault and barrel rolls:
 	for (int i = 0; i < 8; i++){
 		keyframes.push_back(std::make_shared<ShipKeyframe>());
 	}
+
+	umax = keyframes.size() - 3;
 }
 
 void buildTable()
@@ -225,7 +237,7 @@ void buildTable()
 	smax = usTable.at(usTable.size()-1).second;
 }
 
-#define UNIT 15.0f
+#define UNIT 20.0f
 
 // Set the position and rotations of each keyframe in the keyframes vector
 // NOTE: THE QUATERNION ROTATIONS HAVE NOT YET BEEN SET
@@ -240,31 +252,31 @@ void setKeyframes(glm::vec3 p, int animType){
 		case(SOMERSAULT):{
 			currAnim = animType;
 			// Control point behind the current position. Same orientation
-			keyframes.at(0)->setPos(p);
+			keyframes.at(0)->setPos(glm::vec3(0, 0, 0));
 			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, xAxis));
 			
 			// Control point that is the current position. Same orientation
-			keyframes.at(1)->setPos(p);
+			keyframes.at(1)->setPos(glm::vec3(0, 0, 0));
 			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, xAxis));
 
 			// Control point that is one unit on top and one unit in front. (Ship facing upward)
-			keyframes.at(2)->setPos(p + glm::vec3(0.0f, UNIT / 2.0f, UNIT / 2.0f));
+			keyframes.at(2)->setPos(glm::vec3(0.0f, UNIT / 2.0f, UNIT / 2.0f));
 			keyframes.at(2)->setQuat(glm::angleAxis(-(float)M_PI_2, xAxis));
 
 			// Control point at the top (Upside down orientation)
-			keyframes.at(3)->setPos(p + glm::vec3(0.0f, UNIT, 0.0f));
+			keyframes.at(3)->setPos(glm::vec3(0.0f, UNIT, 0.0f));
 			keyframes.at(3)->setQuat(glm::angleAxis(-(float)M_PI, xAxis));
 
 			// Control point that is one unit on top and one unit behind. (Ship facing downward)
-			keyframes.at(4)->setPos(p + glm::vec3(0.0f, UNIT / 2.0f, -UNIT / 2.0f));
+			keyframes.at(4)->setPos(glm::vec3(0.0f, UNIT / 2.0f, -UNIT / 2.0f));
 			keyframes.at(4)->setQuat(glm::angleAxis(-(float)M_PI -(float)M_PI_2, xAxis));
 
 			// Control point that is the current position. Same orientation
-			keyframes.at(5)->setPos(p);
+			keyframes.at(5)->setPos(glm::vec3(0, 0, 0));
 			keyframes.at(5)->setQuat(glm::angleAxis(0.0f, xAxis));
 			
 			// Control point in front of the current position. Same orientation
-			keyframes.at(6)->setPos(p);
+			keyframes.at(6)->setPos(glm::vec3(0, 0, 0));
 			keyframes.at(6)->setQuat(glm::angleAxis(0.0f, xAxis));
 			break;
 		}
@@ -279,6 +291,7 @@ void setKeyframes(glm::vec3 p, int animType){
 	}
 
 	if (animType != NONE){
+		// Make sure adjacent quaternions created will not do the 'twirl' between each other
 		for (int i = 0; i < keyframes.size() - 1; i++){
 			if (dot(keyframes.at(i)->getQuat(), keyframes.at(i + 1)->getQuat()) <= 0.0f){
 				keyframes.at(i + 1)->setQuat(-1.0f * keyframes.at(i + 1)->getQuat());
@@ -290,8 +303,7 @@ void setKeyframes(glm::vec3 p, int animType){
 }
 
 glm::mat4 Ship::generateEMatrix(){
-	umax = keyframes.size() - 3;
-	float u = std::fmod(tGlobal * 2.0f, umax);
+	float u = std::fmod((tGlobal - tStart) * (2.0f + abs(v[2])), umax);
 	int k = floor(u);
 	float u_hat = u - k; // u_hat is between 0 and 1
 	mat4 B = createCatmull();

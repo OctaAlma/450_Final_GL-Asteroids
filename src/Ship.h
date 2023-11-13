@@ -37,7 +37,6 @@ class Ship: public Shape
         glm::vec3 p_prev; // The previous position of the ship
         glm::vec3 p; // The position of the ship in space
         glm::vec3 v; // The velocity of the ship
-        glm::quat rot;
         float roll = 0.0f;
         float yaw = 0.0f;
 };
