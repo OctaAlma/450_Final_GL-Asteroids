@@ -21,7 +21,7 @@
 #define MAX_ASTEROID_SIZE 0.01f
 #define MIN_ASTEROID_SIZE 0.001f
 
-#define NUM_ASTEROIDS 10
+#define NUM_ASTEROIDS 40
 
 extern double tGlobal;
 extern bool drawBoundingBox;

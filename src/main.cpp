@@ -30,9 +30,9 @@ bool isPressed[512] = {0};
 double tGlobal = 0.0f;
 
 bool thirdPersonCam = true;
-bool drawBoundingBox = true;
-bool drawGrid = true;
-bool drawAxisFrame = true;
+bool drawBoundingBox = false;
+bool drawGrid = false;
+bool drawAxisFrame = false;
 
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
@@ -301,13 +301,43 @@ void render()
 	GLSL::checkError(GET_FILE_LINE);
 }
 
+string lowercase(string s){
+	for (int i = 0; i < s.length(); i++){
+		s.at(i) = tolower(s.at(i));
+	}
+
+	return s;
+}
+
+void processInputs(int argc, char **argv){
+	RESOURCE_DIR = argv[1] + string("/");
+	
+	for (int i = 2; i < argc; i++){
+		string opt = lowercase(argv[i]);
+
+		if (opt == "-a"){ }
+		else if (opt == "-v"){ }
+		else if (opt == "-s"){ }
+		else if (opt == "-b"){ drawBoundingBox = true; }
+		else if (opt == "-f"){ drawAxisFrame = true; }
+		else if (opt == "-g"){ drawGrid = true; }
+	}
+}
+
 int main(int argc, char **argv)
 {
 	if(argc < 2) {
-		cout << "Please specify the resource directory." << endl;
+		cout << "Usage: ./Final [RESOURCE_DIR]\n";
+		cout << "Options: -a X   - Sets the number of asteroids to X\n";
+		cout << "         -v X   - Sets the maximum asteroid velocity to X\n";
+		cout << "         -s X   - Sets the maximum asteroid size to X\n";
+		cout << "         -b     - Turns on bounding boxes around objects\n";
+		cout << "         -f     - Turns on the axis frame\n";
+		cout << "         -g     - Turns on the grid\n";
 		return 0;
 	}
-	RESOURCE_DIR = argv[1] + string("/");
+
+	processInputs(argc, argv);
 	
 	// Set error callback.
 	glfwSetErrorCallback(error_callback);

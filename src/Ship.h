@@ -11,8 +11,16 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#define UNIT 20.0f
 extern double tGlobal;
 extern bool drawBoundingBox;
+
+enum ANIMATIONS{
+    NONE,
+    SOMERSAULT,
+    LEFT_ROLL,
+    RIGHT_ROLL
+};
 
 class Ship: public Shape
 {
@@ -32,13 +40,18 @@ class Ship: public Shape
         
         std::shared_ptr<BoundingBox> bb = NULL;
     private:
-        glm::mat4 generateEMatrix();
-        void processKeys(bool keyPresses[256]);
         glm::vec3 p_prev; // The previous position of the ship
         glm::vec3 p; // The position of the ship in space
         glm::vec3 v; // The velocity of the ship
         float roll = 0.0f;
         float yaw = 0.0f;
+        int currAnim = NONE;
+
+        glm::mat4 generateEMatrix();
+        glm::mat4 createMVTransform();
+        void processKeys(bool keyPresses[256]);
+        void setKeyframes(glm::vec3 p, int animType);
+        
 };
 
 #endif
