@@ -17,10 +17,16 @@
 #include "Shape.h"
 #include "Ship.h"
 #include "Asteroid.h"
+#include "Star.h"
 
 using namespace std;
 
 #define NUM_ASTEROID_MODELS 1
+
+bool thirdPersonCam = true;
+bool drawBoundingBox = true;
+bool drawGrid = true;
+bool drawAxisFrame = true;
 
 GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the resources are loaded from
@@ -29,17 +35,19 @@ int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[512] = {0};
 double tGlobal = 0.0f;
 
-bool thirdPersonCam = true;
-bool drawBoundingBox = false;
-bool drawGrid = false;
-bool drawAxisFrame = false;
-
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
 shared_ptr<Ship> shape;
 
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
+vector<shared_ptr<Star> > stars;
+
+void initStars(){
+	for(int i = 0; i < NUM_STARS; i++){
+		stars.push_back(make_shared<Star>());
+	}
+}
 
 void resetAsteroidPositions(){
 	for (auto a = asteroids.begin(); a != asteroids.end(); ++a){
@@ -140,6 +148,9 @@ static void init()
 	for (int i = 0; i < NUM_ASTEROIDS; i++){
 		asteroids.push_back(make_shared<Asteroid>(asteroidModels.at(i % NUM_ASTEROID_MODELS)));
 	}
+
+	// Initialize the stars:
+	initStars();
 	
 	// Initialize time.
 	glfwSetTime(0.0);
@@ -199,11 +210,18 @@ void render()
 		MV->multMatrix(glm::inverse(E->topMatrix()));
 	}
 
+	// Draw the asteroids
 	for (int i = 0; i < asteroids.size(); i++){
 		asteroids.at(i)->move();
 		asteroids.at(i)->drawAsteroid(prog, MV);
 	}
 
+	// Draw the planets
+	// for (int i = 0; i < planets.size(); i++){
+	// 	planets.at(i)->drawPlanet(prog, MV);
+	// }
+
+	// Draw the ship
 	shape->drawShip(prog, MV);
 	prog->unbind();
 	
@@ -235,6 +253,17 @@ void render()
 			glPushMatrix();
 			glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
 			(*a)->bb->draw();
+			glPopMatrix();
+			MV->popMatrix();
+		}
+
+		// Draw the stars
+		for (int i = 0; i < stars.size(); i++){
+			MV->pushMatrix();
+			MV->translate(stars.at(i)->pos);
+			glPushMatrix();
+			glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+			stars.at(i)->draw();
 			glPopMatrix();
 			MV->popMatrix();
 		}

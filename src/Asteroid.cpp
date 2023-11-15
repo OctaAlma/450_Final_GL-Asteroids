@@ -4,18 +4,10 @@
 
 #include "GLSL.h"
 #include "Program.h"
+#include "randomFunctions.h"
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-
-// The following was obtained from:
-// https://stackoverflow.com/questions/5289613/generate-random-float-between-two-floats
-float randomFloat(float a, float b) {
-    float random = ((float) rand()) / (float) RAND_MAX;
-    float diff = b - a;
-    float r = random * diff;
-    return a + r;
-}
 
 Asteroid::Asteroid(std::shared_ptr<Shape> &model){
     this->pos = glm::vec3(randomFloat(-MAX_X, MAX_X), 0, randomFloat(-MAX_Z, MAX_Z));
