@@ -32,28 +32,6 @@ void Ship::loadMesh(const std::string &meshName){
 	bb = make_shared<BoundingBox>(this->posBuf);
 }
 
-glm::mat4 Ship::createMVTransform(){
-	auto T = make_shared<MatrixStack>();
-	// Translate so that the ship intersects with the ground:
-	T->translate(0.0f, -0.3f, 0.0f);
-	
-	// Scale the size of the ship:
-	T->scale(0.7f, 0.7f, 0.7f);
-
-	// Rotate the ship about the y axis (it will be facing the wrong direction otherwise)
-	T->rotate(M_PI, 0, 1, 0);
-	
-	T->translate(p_prev);
-	T->rotate(yaw, 0, 1, 0);
-	T->translate(p - p_prev);
-
-	if (currAnim == LEFT_ROLL){
-		T->translate(generateEMatrix()[3]);
-	}
-
-	return T->topMatrix();
-}
-
 void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	// Translate so that the ship intersects with the ground:
 	MV->translate(0.0f, -0.3f, 0.0f);
@@ -126,6 +104,8 @@ void Ship::updatePrevPos(){
 glm::vec3 Ship::getPos(){ return this->p; }
 
 glm::vec3 Ship::getVel(){ return this->v; }
+
+int Ship::getCurrAnim(){ return this->currAnim; };
 
 #define MAX_DIR_VEL 1.0f
 #define MAX_ROLL M_PI_4
@@ -454,4 +434,8 @@ void Ship::performSomersault()
 	if (keyframes.empty()){ createKeyframes(); }
 
 	if (currAnim == NONE){ setKeyframes(this->p, SOMERSAULT); }
+}
+
+std::shared_ptr<BoundingBox> Ship::getBoundingBox(){
+	return make_shared<BoundingBox>(bb->minCoords, bb->maxCoords);
 }

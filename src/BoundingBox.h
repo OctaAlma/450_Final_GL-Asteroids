@@ -16,6 +16,7 @@ struct BoundingBox{
 
 	BoundingBox(std::vector<float> &posBuf);
     BoundingBox(std::vector<float>* posBuf);
+    BoundingBox(glm::vec3 min, glm::vec3 max);
 
     void updateCoords(std::shared_ptr<MatrixStack> M);
 

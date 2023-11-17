@@ -42,6 +42,8 @@ BoundingBox::BoundingBox(std::vector<float>* posBuf){
     }	
 }
 
+BoundingBox::BoundingBox(glm::vec3 min, glm::vec3 max):minCoords(min), maxCoords(max) {}
+
 void BoundingBox::updateCoords(std::shared_ptr<MatrixStack> M){
     minCoords = M->topMatrix() * glm::vec4(minCoords, 1.0f);
     maxCoords = M->topMatrix() * glm::vec4(maxCoords, 1.0f);
@@ -52,12 +54,6 @@ void BoundingBox::draw(){
 	glLineWidth(2);
     glColor3f(1, 1, 1);
 	glBegin(GL_LINES);
-
-    float xCoords[2] = {minCoords.x, maxCoords.x};
-    float yCoords[2] = {minCoords.y, maxCoords.y};
-    float zCoords[2] = {minCoords.z, maxCoords.z};
-
-    float xCurr, yCurr, zCurr;
 
     // Draw E1:    
 	glVertex3f(minCoords.x, minCoords.y, minCoords.z);

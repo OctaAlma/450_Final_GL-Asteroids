@@ -132,7 +132,7 @@ static void init()
 	prog->setVerbose(false);
 	
 	camera = make_shared<Camera>();
-	camera->setInitDistance(20.0f);
+	camera->setInitDistance(25.0f);
 	
 	shape = make_shared<Ship>();
 	shape->loadMesh(RESOURCE_DIR + "ship.obj");
@@ -216,11 +216,6 @@ void render()
 		asteroids.at(i)->drawAsteroid(prog, MV);
 	}
 
-	// Draw the planets
-	// for (int i = 0; i < planets.size(); i++){
-	// 	planets.at(i)->drawPlanet(prog, MV);
-	// }
-
 	// Draw the ship
 	shape->drawShip(prog, MV);
 	prog->unbind();
@@ -234,6 +229,17 @@ void render()
 	
 	// Setup the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
+
+	// Draw the stars
+	for (int i = 0; i < stars.size(); i++){
+		MV->pushMatrix();
+		MV->translate(stars.at(i)->pos);
+		glPushMatrix();
+		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+		stars.at(i)->draw();
+		glPopMatrix();
+		MV->popMatrix();
+	}
 	
 	if (drawBoundingBox){
 		// Draw the ship's bounding box:
@@ -242,7 +248,7 @@ void render()
 		MV->rotate(-shape->getRoll(), 0, 0, 1);
 		glPushMatrix();
 		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-		shape->bb->draw();
+		shape->getBoundingBox()->draw();
 		glPopMatrix();
 		MV->popMatrix();
 
@@ -252,22 +258,12 @@ void render()
 			(*a)->applyMVTransforms(MV);
 			glPushMatrix();
 			glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-			(*a)->bb->draw();
-			glPopMatrix();
-			MV->popMatrix();
-		}
-
-		// Draw the stars
-		for (int i = 0; i < stars.size(); i++){
-			MV->pushMatrix();
-			MV->translate(stars.at(i)->pos);
-			glPushMatrix();
-			glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-			stars.at(i)->draw();
+			(*a)->getBoundingBox()->draw();
 			glPopMatrix();
 			MV->popMatrix();
 		}
 	}
+
 	// THIS NEEDS TO BE CALLED AFTER DRAWING THE SHIP AND BOUNDING BOX
 	shape->updatePrevPos();
 
@@ -293,13 +289,12 @@ void render()
 	
 	// Draw grid
 	if (drawGrid){
-		float gridSizeHalf = 80.0f;
+		float gridSizeHalf = 100.0f;
 		int gridNx = 20;
 		int gridNz = 20;
 
 		glLineWidth(1);
-		// glColor3f(0.8f, 0.8f, 0.8f);
-		glColor3f(0.1f, 0.4f, 0.1f);
+		glColor3f(0.1f, 0.5f, 0.1f);
 		glBegin(GL_LINES);
 		for(int i = 0; i < gridNx+1; ++i) {
 			float alpha = i / (float)gridNx;
@@ -350,6 +345,7 @@ void processInputs(int argc, char **argv){
 		else if (opt == "-b"){ drawBoundingBox = true; }
 		else if (opt == "-f"){ drawAxisFrame = true; }
 		else if (opt == "-g"){ drawGrid = true; }
+		else if (opt == "-t"){ thirdPersonCam = false; }
 	}
 }
 
@@ -363,6 +359,7 @@ int main(int argc, char **argv)
 		cout << "         -b     - Turns on bounding boxes around objects\n";
 		cout << "         -f     - Turns on the axis frame\n";
 		cout << "         -g     - Turns on the grid\n";
+		cout << "         -t     - Turns on top-down cam\n";
 		return 0;
 	}
 

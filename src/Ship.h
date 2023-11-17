@@ -33,12 +33,14 @@ class Ship: public Shape
         void performSomersault();
         glm::vec3 getPos();
         glm::vec3 getVel();
+        int getCurrAnim();
         float getRoll() {return this->roll; }
         void moveShip(bool keyPresses[256]);
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void updatePrevPos();
+
+        std::shared_ptr<BoundingBox> getBoundingBox();
         
-        std::shared_ptr<BoundingBox> bb = NULL;
     private:
         glm::vec3 p_prev; // The previous position of the ship
         glm::vec3 p; // The position of the ship in space
@@ -46,11 +48,12 @@ class Ship: public Shape
         float roll = 0.0f;
         float yaw = 0.0f;
         int currAnim = NONE;
+        std::shared_ptr<BoundingBox> bb = NULL;
 
         glm::mat4 generateEMatrix();
-        glm::mat4 createMVTransform();
         void processKeys(bool keyPresses[256]);
         void setKeyframes(glm::vec3 p, int animType);
+        
         
 };
 

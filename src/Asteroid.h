@@ -39,13 +39,14 @@ class Asteroid
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void randomPos();
         void randomDir();
-        std::shared_ptr<BoundingBox> bb = NULL;
+        std::shared_ptr<BoundingBox> getBoundingBox();
     private:
         glm::vec3 pos;
         glm::vec3 dir;
         glm::vec3 color;
         float size;
         float speed;
+        std::shared_ptr<BoundingBox> bb = NULL;
 };
 
 #endif

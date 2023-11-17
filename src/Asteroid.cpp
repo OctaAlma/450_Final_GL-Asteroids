@@ -90,3 +90,7 @@ void Asteroid::randomDir(){
         dir[0] *= -1.0f;
     }
 }
+
+std::shared_ptr<BoundingBox> Asteroid::getBoundingBox(){
+    return std::make_shared<BoundingBox>(bb->minCoords, bb->maxCoords);
+}
