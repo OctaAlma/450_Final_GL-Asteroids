@@ -161,11 +161,57 @@ static void init()
 	GLSL::checkError(GET_FILE_LINE);
 }
 
+// Checks if the ship has collided with an asteroid.
+// Returns ``i``, where ``i`` is the index of the asteroid that the ship collided with.
+// If there was no collision, returns ``-1``.
+int checkShipCollisions(){
+	// The ship has invincibility while performing an animation
+	if (shape->getCurrAnim() != NONE){
+		return -1;
+	}
+
+	std::shared_ptr<MatrixStack> MS = make_shared<MatrixStack>(); // A matrix stack to store the transformations from ship coords to world coords
+	auto bbS = shape->getBoundingBox(); // The bounding box of the ship mesh in mesh coords
+
+	// Apply all transformations to go from ship mesh to world coords:
+	MS->pushMatrix();
+	shape->applyMVTransforms(MS);
+
+	// Transform the bounding box coordinates from ship mesh coords to world coords
+	bbS->updateCoords(MS);
+
+	std::shared_ptr<MatrixStack> MA = make_shared<MatrixStack>(); // A matrix stack to store the transformations from asteroid coords to world coords 
+	for (int i = 0; i < asteroids.size(); i++){
+		auto a = asteroids.at(i);
+		auto bbA = a->getBoundingBox();
+
+		MA->pushMatrix();
+		a->applyMVTransforms(MA);
+		bbA->updateCoords(MA); // the current asteroid's bounding box will now be in world coordinates 
+		MA->popMatrix();
+
+		if (bbA->collided(bbS) || bbS->collided(bbA)){
+			return i;
+		}
+	}
+
+	MS->popMatrix();
+
+	return -1;
+}
+
 void render()
 {
 	// Update time.
 	double t = glfwGetTime();
 	tGlobal = t;
+
+	// Check if the player has collided with an asteroid
+	int collision = checkShipCollisions();
+
+	if (collision != -1){
+		// Do something when a collision is detected...
+	}
 
 	shape->moveShip(isPressed);
 	
