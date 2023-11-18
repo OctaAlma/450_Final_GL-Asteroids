@@ -34,7 +34,8 @@ class Ship: public Shape
         glm::vec3 getPos();
         glm::vec3 getVel();
         int getCurrAnim();
-        float getRoll() {return this->roll; }
+        float getRoll() { return this->roll; }
+        float getYaw() { return this->yaw; }
         void moveShip(bool keyPresses[256]);
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void updatePrevPos();

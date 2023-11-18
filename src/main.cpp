@@ -18,6 +18,7 @@
 #include "Ship.h"
 #include "Asteroid.h"
 #include "Star.h"
+#include "Beam.h"
 
 using namespace std;
 
@@ -43,10 +44,28 @@ vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
 vector<shared_ptr<Star> > stars;
 
+bool shootBeam = false;
+vector<shared_ptr<Beam> > beams;
+
 void initStars(){
 	for(int i = 0; i < NUM_STARS; i++){
 		stars.push_back(make_shared<Star>());
 	}
+}
+
+void initBeams(){
+	for (int i = 0; i < MAX_BEAMS; i++){
+		beams.push_back(make_shared<Beam>());
+	}
+}
+
+std::shared_ptr<Beam> findUnusedBeam(){
+	for (auto b = beams.begin(); b != beams.end(); ++b){
+		if ((*b)->isAlive() == false){
+			return (*b);
+		}
+	}
+	return NULL;
 }
 
 void resetAsteroidPositions(){
@@ -73,6 +92,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 	if (action == GLFW_RELEASE){
 		isPressed[key] = false;
+	}
+
+	if (action == GLFW_RELEASE && (key == 'F' || key == 'f')){
+		shootBeam = true;
 	}
 }
 
@@ -151,6 +174,9 @@ static void init()
 
 	// Initialize the stars:
 	initStars();
+
+	// Initialize the beam objects:
+	initBeams();
 	
 	// Initialize time.
 	glfwSetTime(0.0);
@@ -286,6 +312,37 @@ void render()
 		glPopMatrix();
 		MV->popMatrix();
 	}
+
+	// Check if the user shot a beam
+	if (shootBeam){
+		std::shared_ptr<Beam> b = findUnusedBeam();
+		
+		if (b != NULL){
+			// If the user shot a beam, then:
+			// 1. Its position should be initialized to the spaceship's current position
+			// 2. Its direction should be initialized to the direction the camera is facing
+			auto MB = make_shared<MatrixStack>();
+			MB->pushMatrix();
+			ship->applyMVTransforms(MB);
+
+			glm::vec3 beamPos = MB->topMatrix() * glm::vec4(0.0f, 0.5f, 2.0f, 1.0f);
+			glm::vec3 beamDir = MB->topMatrix() * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+			b->reset(beamPos, beamDir);
+		}
+
+		shootBeam = false;
+	}
+	
+	// Draw the beams
+	MV->pushMatrix();
+	glPushMatrix();
+	glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+	for (auto b = beams.begin(); b != beams.end(); ++b){ 
+		(*b)->draw(); 
+	}
+	glPopMatrix();
+	MV->popMatrix();
 	
 	if (drawBoundingBox){
 		// Draw the ship's bounding box:
