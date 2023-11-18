@@ -37,7 +37,7 @@ double tGlobal = 0.0f;
 
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
-shared_ptr<Ship> shape;
+shared_ptr<Ship> ship;
 
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
@@ -134,9 +134,9 @@ static void init()
 	camera = make_shared<Camera>();
 	camera->setInitDistance(25.0f);
 	
-	shape = make_shared<Ship>();
-	shape->loadMesh(RESOURCE_DIR + "ship.obj");
-	shape->init();
+	ship = make_shared<Ship>();
+	ship->loadMesh(RESOURCE_DIR + "ship.obj");
+	ship->init();
 
 	// Initialize asteroid meshes. We only want to load them in once:
 	for (int i = 0; i < NUM_ASTEROID_MODELS; i++){
@@ -166,16 +166,16 @@ static void init()
 // If there was no collision, returns ``-1``.
 int checkShipCollisions(){
 	// The ship has invincibility while performing an animation
-	if (shape->getCurrAnim() != NONE){
+	if (ship->getCurrAnim() != NONE){
 		return -1;
 	}
 
 	std::shared_ptr<MatrixStack> MS = make_shared<MatrixStack>(); // A matrix stack to store the transformations from ship coords to world coords
-	auto bbS = shape->getBoundingBox(); // The bounding box of the ship mesh in mesh coords
+	auto bbS = ship->getBoundingBox(); // The bounding box of the ship mesh in mesh coords
 
 	// Apply all transformations to go from ship mesh to world coords:
 	MS->pushMatrix();
-	shape->applyMVTransforms(MS);
+	ship->applyMVTransforms(MS);
 
 	// Transform the bounding box coordinates from ship mesh coords to world coords
 	bbS->updateCoords(MS);
@@ -213,7 +213,7 @@ void render()
 		// Do something when a collision is detected...
 	}
 
-	shape->moveShip(isPressed);
+	ship->moveShip(isPressed);
 	
 	// Get current frame buffer size.
 	int width, height;
@@ -251,7 +251,7 @@ void render()
 
 	if (thirdPersonCam == true){
 		auto E = make_shared<MatrixStack>();
-		shape->applyMVTransforms(E);
+		ship->applyMVTransforms(E);
 		MV->rotate(M_PI, 0,1,0);
 		MV->multMatrix(glm::inverse(E->topMatrix()));
 	}
@@ -263,7 +263,7 @@ void render()
 	}
 
 	// Draw the ship
-	shape->drawShip(prog, MV);
+	ship->drawShip(prog, MV);
 	prog->unbind();
 	
 	// Draw the frame and the grid with OpenGL 1.x (no GLSL)
@@ -290,11 +290,11 @@ void render()
 	if (drawBoundingBox){
 		// Draw the ship's bounding box:
 		MV->pushMatrix();
-		shape->applyMVTransforms(MV);
-		MV->rotate(-shape->getRoll(), 0, 0, 1);
+		ship->applyMVTransforms(MV);
+		MV->rotate(-ship->getRoll(), 0, 0, 1);
 		glPushMatrix();
 		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-		shape->getBoundingBox()->draw();
+		ship->getBoundingBox()->draw();
 		glPopMatrix();
 		MV->popMatrix();
 
@@ -311,7 +311,7 @@ void render()
 	}
 
 	// THIS NEEDS TO BE CALLED AFTER DRAWING THE SHIP AND BOUNDING BOX
-	shape->updatePrevPos();
+	ship->updatePrevPos();
 
 	glPushMatrix();
 	glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
