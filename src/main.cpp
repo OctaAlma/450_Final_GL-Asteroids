@@ -29,6 +29,8 @@ bool drawBoundingBox = true;
 bool drawGrid = true;
 bool drawAxisFrame = true;
 
+bool pause = false;
+
 GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the resources are loaded from
 
@@ -96,6 +98,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 	if (action == GLFW_RELEASE && (key == 'F' || key == 'f')){
 		shootBeam = true;
+	}
+
+	if (action == GLFW_RELEASE && (key == 'P' || key == 'p')){
+		pause = !pause;
 	}
 }
 
@@ -226,6 +232,39 @@ int checkShipCollisions(){
 	return -1;
 }
 
+// Checks if the ship has collided with an asteroid.
+// Returns ``i``, where ``i`` is the index of the asteroid that the ship collided with.
+// If there was no collision, returns ``-1``.
+int checkBeamCollisions(){
+
+	for (int i = 0; i < beams.size(); i++){
+		
+		if (beams.at(i)->isAlive() == false){ continue; }
+
+		auto bbB = beams.at(i)->getBoundingBox();
+				
+		std::shared_ptr<MatrixStack> MA = make_shared<MatrixStack>(); // A matrix stack to store the transformations from asteroid coords to world coords 
+		for (int j = 0; j < asteroids.size(); j++){
+			auto a = asteroids.at(j);
+			auto bbA = a->getBoundingBox();
+
+			MA->pushMatrix();
+			a->applyMVTransforms(MA);
+			bbA->updateCoords(MA); // the current asteroid's bounding box will now be in world coordinates 
+			MA->popMatrix();
+
+			if (bbA->collided(bbB) || bbB->collided(bbA)){
+				cout << "Beam " << i << " collided with asteroid " << j << endl; 
+				beams.at(i)->setDead();
+				asteroids.erase(asteroids.begin() + j);
+				j--;
+			}
+		}
+	}
+
+	return -1;
+}
+
 void render()
 {
 	// Update time.
@@ -238,6 +277,8 @@ void render()
 	if (collision != -1){
 		// Do something when a collision is detected...
 	}
+
+	checkBeamCollisions();
 
 	ship->moveShip(isPressed);
 	
@@ -314,7 +355,7 @@ void render()
 	}
 
 	// Check if the user shot a beam
-	if (shootBeam){
+	if (shootBeam && (ship->getCurrAnim() != SOMERSAULT)){
 		std::shared_ptr<Beam> b = findUnusedBeam();
 		
 		if (b != NULL){
@@ -365,6 +406,19 @@ void render()
 			glPopMatrix();
 			MV->popMatrix();
 		}
+
+		// Draw the beam's bounding box
+		MV->pushMatrix();
+		glPushMatrix();
+		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
+		for (auto b = beams.begin(); b != beams.end(); ++b){ 
+			auto bb = (*b)->getBoundingBox();
+			if (bb != NULL) { 
+				bb->draw(); 
+			}
+		}
+		glPopMatrix();
+		MV->popMatrix();
 	}
 
 	// THIS NEEDS TO BE CALLED AFTER DRAWING THE SHIP AND BOUNDING BOX

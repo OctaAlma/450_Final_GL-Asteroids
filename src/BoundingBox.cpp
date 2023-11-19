@@ -4,6 +4,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 using namespace std;
 
 BoundingBox::BoundingBox(std::vector<float> &posBuf){
@@ -42,14 +45,24 @@ BoundingBox::BoundingBox(std::vector<float>* posBuf){
     }	
 }
 
-BoundingBox::BoundingBox(glm::vec3 min, glm::vec3 max):minCoords(min), maxCoords(max) {}
+BoundingBox::BoundingBox(glm::vec3 p1, glm::vec3 p2){
+    minCoords = glm::vec3(std::min(p1.x, p2.x), std::min(p1.y, p2.y), std::min(p1.z, p2.z));
+    maxCoords = glm::vec3(std::max(p1.x, p2.x), std::max(p1.y, p2.y), std::max(p1.z, p2.z));
+}
 
 void BoundingBox::updateCoords(std::shared_ptr<MatrixStack> M){
     minCoords = M->topMatrix() * glm::vec4(minCoords, 1.0f);
     maxCoords = M->topMatrix() * glm::vec4(maxCoords, 1.0f);
 }
 
+void BoundingBox::updateCoords(glm::mat4 M){
+    minCoords = M * glm::vec4(minCoords, 1.0f);
+    maxCoords = M * glm::vec4(maxCoords, 1.0f);
+}
+
+
 void BoundingBox::draw(){
+
     // Draw frame
 	glLineWidth(2);
     glColor3f(1, 1, 1);
@@ -106,7 +119,7 @@ void BoundingBox::draw(){
     glEnd();
 }
 
-bool BoundingBox::collided(std::shared_ptr<BoundingBox> other){ 
+bool BoundingBox::collided(std::shared_ptr<BoundingBox> other){
 
     // xmax1 >= xmin2 and xmax2 >= xmin1
     bool cond1 = (maxCoords.x >= other->minCoords.x && other->maxCoords.x >= minCoords.x);
