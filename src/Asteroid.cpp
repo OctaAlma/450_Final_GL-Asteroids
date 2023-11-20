@@ -30,6 +30,13 @@ Asteroid::Asteroid(std::shared_ptr<Shape> &model){
     this->bb = std::make_shared<BoundingBox>(this->model->getPosBuf());
 }
 
+void Asteroid::setSize(float size){ this->size = size; }
+void Asteroid::setSpeed(float speed) { this->speed = speed; }
+void Asteroid::setDir(glm::vec3 dir){ this->dir = dir; }
+void Asteroid::setPos(glm::vec3 pos){ this->pos = pos; }
+void Asteroid::setColor(glm::vec3 color){ this->color = color; }
+
+
 void Asteroid::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
     MV->translate(this->pos);
     MV->scale(size, size, size);
@@ -93,4 +100,39 @@ void Asteroid::randomDir(){
 
 std::shared_ptr<BoundingBox> Asteroid::getBoundingBox(){
     return std::make_shared<BoundingBox>(bb->minCoords, bb->maxCoords);
+}
+
+
+std::vector<std::shared_ptr<Asteroid> > Asteroid::getChildren(){
+    std::vector<std::shared_ptr<Asteroid> > children;
+
+    if (this->size / 2.0f > MIN_ASTEROID_SIZE){
+        // Create children
+        auto c1 = std::make_shared<Asteroid>(this->model);
+        auto c2 = std::make_shared<Asteroid>(this->model);
+
+        // - Size = this->size / 2
+        float cSize = this->size / 2.0f;
+        c1->setSize(cSize);
+        c2->setSize(cSize);
+        
+        // - Speed = this->speed * 1.2f;
+        float cSpeed = std::min(this->speed * 1.2f, MAX_ASTEROID_SPEED);
+        c1->setSpeed(cSpeed);
+        c2->setSpeed(cSpeed);
+        
+        // - Direction is perpendicular to the current direction
+        glm::vec3 cDir(dir.z, dir.y, dir.x);
+        c1->setDir(cDir);
+        c2->setDir(-1.0f * cDir);
+
+        // - Position is equal to the parent asteroid's position
+        c1->setPos(pos);
+        c2->setPos(pos);
+
+        children.push_back(c1);
+        children.push_back(c2);
+    }
+
+    return children;
 }

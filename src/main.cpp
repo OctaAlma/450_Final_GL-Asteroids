@@ -100,7 +100,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 		shootBeam = true;
 	}
 
-	if (action == GLFW_RELEASE && (key == 'P' || key == 'p')){
+	if (action == GLFW_PRESS && (key == 'P' || key == 'p')){
 		pause = !pause;
 	}
 }
@@ -232,10 +232,10 @@ int checkShipCollisions(){
 	return -1;
 }
 
-// Checks if the ship has collided with an asteroid.
-// Returns ``i``, where ``i`` is the index of the asteroid that the ship collided with.
-// If there was no collision, returns ``-1``.
-int checkBeamCollisions(){
+// Checks if there are any beams that have collided with asteroids
+void checkBeamCollisions(){
+
+	std::vector<std::shared_ptr<Asteroid> > newChildren;
 
 	for (int i = 0; i < beams.size(); i++){
 		
@@ -254,22 +254,36 @@ int checkBeamCollisions(){
 			MA->popMatrix();
 
 			if (bbA->collided(bbB) || bbB->collided(bbA)){
-				cout << "Beam " << i << " collided with asteroid " << j << endl; 
+				std::cout << "Beam " << i << " collided with asteroid " << j << endl; 
 				beams.at(i)->setDead();
+
+				auto children = a->getChildren();
+				if (!children.empty()){
+					newChildren.push_back(children.at(0));
+					newChildren.push_back(children.at(1));
+				}
+
 				asteroids.erase(asteroids.begin() + j);
 				j--;
 			}
 		}
 	}
 
-	return -1;
+	for (int i = 0; i < newChildren.size(); i++){
+		asteroids.push_back(newChildren.at(i));
+	}
 }
 
 void render()
 {
 	// Update time.
 	double t = glfwGetTime();
-	tGlobal = t;
+
+	if (!pause){
+		tGlobal = t;
+	}else{
+		cout << "tGlobal: " << tGlobal << endl;
+	}
 
 	// Check if the player has collided with an asteroid
 	int collision = checkShipCollisions();

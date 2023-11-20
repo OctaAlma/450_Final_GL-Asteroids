@@ -19,7 +19,7 @@
 #define MAX_ASTEROID_SPEED 0.5f
 
 #define MAX_ASTEROID_SIZE 0.01f
-#define MIN_ASTEROID_SIZE 0.001f
+#define MIN_ASTEROID_SIZE 0.0018f
 
 #define NUM_ASTEROIDS 40
 
@@ -31,6 +31,13 @@ class Asteroid
     public:
         Asteroid(std::shared_ptr<Shape> &model);
         ~Asteroid(){}
+
+        void setSize(float size);
+        void setSpeed(float speed);
+        void setDir(glm::vec3 dir);
+        void setPos(glm::vec3 pos);
+        void setColor(glm::vec3 color);
+
         std::shared_ptr<Shape> model;
         void drawAsteroid(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV);
         void move();
@@ -40,6 +47,7 @@ class Asteroid
         void randomPos();
         void randomDir();
         std::shared_ptr<BoundingBox> getBoundingBox();
+        std::vector<std::shared_ptr<Asteroid>> getChildren();
     private:
         glm::vec3 pos;
         glm::vec3 dir;
