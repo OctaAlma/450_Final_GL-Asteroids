@@ -1,0 +1,115 @@
+@font-face {
+    font-family: 'PumpOpti'; /*a name to be used later*/
+    src: url('./PumpOpti-Medium.ttf'); /*URL to font*/
+}
+
+.title {
+    font-family: 'PumpOpti';
+}
+
+.content {
+    margin-top: 1%;
+    margin-bottom: 1%;
+    margin-left: 7%;
+    margin-right: 7%;
+
+    padding-bottom: 1%;
+}
+
+.line {
+    margin-left: 8%;
+    margin-right: 8%;
+    border-top: 4px solid white;
+    border-radius: 5px;
+}
+
+.desc {
+    font-family: 'Futura';
+    font-size: 120%;
+    color: lightgrey;
+}
+
+.screenshot{
+    text-align: center;
+}
+
+.screenshot img{
+    max-height: 400px;
+    max-width: 100%;
+}
+
+body{
+    background-color: #121212;
+    /* background-image: url('./space.png'); */
+    background-size: 40%;
+    background-repeat: repeat;
+}
+
+h1{
+    text-align: center;
+    color: white;
+    font-size: 250%;
+    padding-top: 1%;
+    margin: 0;
+}
+
+h2{
+    text-align: center;
+    color: #009fdb;
+    padding-bottom: 0.5%;
+}
+
+h3{
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+}
+
+h4{
+    font-size: 120%;
+    color: white;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+p{
+    color: lightgrey;
+}
+
+b{
+    color: white;
+}
+
+a{
+    color: #009fdb;
+}
+
+ul li{
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+table{
+    width: 100%;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+tr{
+    width: 100%;
+    text-align: center;
+    font-family: 'futura';
+    color: lightgrey;
+}
+
+td{
+    padding-top: 10px;
+    width: 50%;
+}
+
+footer{
+    padding-top: 2%;
+    padding-bottom: 2%;
+    text-align: center;
+    color: lightgrey;
+}

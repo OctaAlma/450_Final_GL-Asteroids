@@ -28,6 +28,7 @@ public:
 	void mouseClicked(float x, float y, bool shift, bool ctrl, bool alt);
 	void mouseMoved(float x, float y);
 	void applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const;
+	void applyOrthogonalMatrix(std::shared_ptr<MatrixStack> P) const;
 	void applyViewMatrix(std::shared_ptr<MatrixStack> MV) const;
 	
 private:

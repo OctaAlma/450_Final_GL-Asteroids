@@ -1,0 +1,84 @@
+<!-- 
+Name: Octavio Almanza
+UIN: 628005492
+CSCE 450H: Computer Animation Fall 2023
+-->
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>CSCE 450 Final - Octavio Almanza</title>
+        <link href="index.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <h1 class="title"> GL-ASTEROIDS </h1>
+        <h2 class="title">video game program</h2>
+        <h3 class="title">HYPERSPACE • THRUST CONTROL • MANEUVERS</h3>
+
+        <div class="line"></div>
+    
+        <div class="content">
+            <h4 class="title">ANIMATION TECHNIQUES</h4>
+
+            <ul>
+                <li class="desc"><b>Dynamic Keyframes • </b> 
+                    This project involves the implementation of dynamic keyframing, which vary depending on factors such as the position and velocity of the ship at the moment the keyframed animation is triggered. These factors will affect the time it takes to complete the animation, as well as the position of the ship once the animation is finished.
+                </li>
+            </ul>
+                
+                <div class="screenshot">
+                    <img src="./test.png">
+                    <img src="./test.png">
+                </div>
+            
+            <ul>
+                <li class="desc"><b>Particle Effects • </b>
+                    We can view random particles generated whenever the ship is accelerating in the forward direction. Once the ship reaches its highest speed, the particle colors will shift towards a blueish hue.
+                    <br><br>
+                    Particles are also created whenever the asteroids are destroyed. The number of particles varies depending on this size of the asteroid that was destroyed, with bigger asteroids creating more particles.
+                </li>
+                
+                <li class="desc"><b>Collision Detection • </b>
+                    Collision detection is managed through bounding [SPHERES OR BOXES, CHANGE WHEN FINALIZED] for both the asteroids and the spaceship. When initialized, each asteroid has a predetermined radius that is used to calculate the size of its hitbox. 
+                    <br><br>    
+                    Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
+                    <br><br>
+                    Lasers are represented by line segments. A special collision detection is used to determine whether or not the line segment intersects the hitboxes of the asteroids.
+                </li>
+            </ul>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="content">
+            <h4 class="title">CONTROLS</h4>
+
+            <ul>
+                <li class="desc">The <b>WASD</b> keys can be used to move the ship around the map.</li>
+                <li class="desc">The <b>Q</b> and <b>E</b> keys trigger left and right barrel-rolls, respectively.</li>
+                <li class="desc">The <b>SPACEBAR</b> key triggers a somersault.</li>
+                <li class="desc">Finally, the <b>F</b> key can be used to fire a plasma beam. Use this to destroy the asteroids!</li>
+            </ul>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="content">
+            <h4 class="title">DEVELOPMENT CHALLENGES</h4>
+            <p class="desc"></p>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="content">
+            <h4 class="title"><a href="https://github.com/OctaAlma/450-Final">DOWNLOAD</a></h4>
+        </div>
+
+        <footer class="title">
+            PROGRAM CODE IS OPEN SOURCE AND FREE TO USE.
+            <br><br>
+            CSCE 450: COMPUTER ANIMATION FINAL PROJECT DEVELOPED BY OCTAVIO ALMANZA. 
+        </footer>
+    </body>
+</html>

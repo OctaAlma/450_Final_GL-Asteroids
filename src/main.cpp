@@ -290,6 +290,7 @@ void render()
 
 	if (collision != -1){
 		// Do something when a collision is detected...
+		cout << "Ship collided with asteroid at time " << t << endl;
 	}
 
 	checkBeamCollisions();
@@ -321,12 +322,17 @@ void render()
 	auto P = make_shared<MatrixStack>();
 	auto MV = make_shared<MatrixStack>();
 	
+	prog->bind();
+
 	// Apply camera transforms
 	P->pushMatrix();
 	camera->applyProjectionMatrix(P);
+	// camera->applyOrthogonalMatrix(P);
 	MV->pushMatrix();
 	camera->applyViewMatrix(MV);
-	prog->bind();
+
+	// Use an orthogonal projection for the HUD objects
+	// But it might be easier to use a perspective that is very far away (looks close enough to projection)
 
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 
