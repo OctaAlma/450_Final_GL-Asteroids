@@ -12,7 +12,7 @@
 Asteroid::Asteroid(std::shared_ptr<Shape> &model){
     this->pos = glm::vec3(randomFloat(-MAX_X, MAX_X), 0, randomFloat(-MAX_Z, MAX_Z));
     this->dir = glm::normalize(glm::vec3((float) rand() / (RAND_MAX), 0.0f, (float) rand() / (RAND_MAX)));
-    this->color = glm::vec3(randomFloat(0.0f, 1.0f), randomFloat(0.0f, 1.0f), randomFloat(0.0f, 1.0f));
+    this->color = glm::vec3(randomFloat(0.1f, 1.0f), randomFloat(0.1f, 1.0f), randomFloat(0.1f, 1.0f));
     bool zNeg = rand() % 2;
     bool xNeg = rand() % 2;
 

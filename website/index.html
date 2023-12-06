@@ -40,7 +40,7 @@ CSCE 450H: Computer Animation Fall 2023
                 </li>
                 
                 <li class="desc"><b>Collision Detection • </b>
-                    Collision detection is managed through bounding [SPHERES OR BOXES, CHANGE WHEN FINALIZED] for both the asteroids and the spaceship. When initialized, each asteroid has a predetermined radius that is used to calculate the size of its hitbox. 
+                    Collision detection is managed through bounding spheres for both the asteroids and the spaceship. When initialized, each asteroid has a predetermined radius that is used to calculate the size of its hitbox. Continuous sphere-to-sphere collisions are performed for the spaceship and all of the asteroids. Laser beams are represented internally by line segments, and line intersections are performed to check if they collide with any asteroids while they are "active".  
                     <br><br>    
                     Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
                     <br><br>

@@ -12,6 +12,8 @@
 #include <glm/gtc/quaternion.hpp>
 
 #define UNIT 20.0f
+#define ININCIBILITY_TIME 1.0 // The number of seconds the ship is invincible after a collision
+
 extern double tGlobal;
 extern bool drawBoundingBox;
 
@@ -39,6 +41,9 @@ class Ship: public Shape
         void moveShip(bool keyPresses[256]);
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void updatePrevPos();
+
+        void setInvincible();
+        bool isInvincible();
 
         std::shared_ptr<BoundingSphere> getBoundingSphere();
         

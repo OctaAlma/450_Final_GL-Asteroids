@@ -31,6 +31,16 @@ void Ship::loadMesh(const std::string &meshName){
 	Shape::loadMesh(meshName);  
 }
 
+double startInvincible = -1.0;
+
+void Ship::setInvincible(){
+	startInvincible = tGlobal;
+}
+
+bool Ship::isInvincible(){
+	return (tGlobal < startInvincible + ININCIBILITY_TIME) || (currAnim != NONE);
+}
+
 void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	// Translate so that the ship intersects with the ground:
 	MV->translate(0.0f, -0.3f, 0.0f);

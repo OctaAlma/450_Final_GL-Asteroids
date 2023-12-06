@@ -64,7 +64,7 @@ void Camera::applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const
 void Camera::applyOrthogonalMatrix(std::shared_ptr<MatrixStack> P) const
 {
 	// Modify provided MatrixStack
-	P->multMatrix(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 500.0f));
+	P->multMatrix(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, -10.0f, 500.0f));
 }
 
 void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV) const

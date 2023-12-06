@@ -30,6 +30,7 @@ bool drawGrid = true;
 bool drawAxisFrame = true;
 
 bool pause = false;
+int numLives = 5;
 
 GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the resources are loaded from
@@ -135,6 +136,38 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
+void drawHUD(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV){
+	// Draw the lives
+	// Use an orthogonal projection for the HUD objects
+	// But it might be easier to use a perspective that is very far away (looks close enough to projection)
+	P->pushMatrix();
+	MV->pushMatrix();
+
+	camera->applyOrthogonalMatrix(P);
+	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
+
+
+	for (int i = 0; i < numLives; i++){
+		MV->pushMatrix();
+		glm::vec3 t(-45.0f + 5.5f * i, 42.5f, -3.0f);
+		MV->translate(t);
+		MV->rotate(-M_PI + tGlobal, 0.0f, 1.0f, 0.0f);
+		MV->rotate(-M_PI_2, 1.0f, 0.0f, 0.0f);
+	
+		glUniform3f(prog->getUniform("lightPos"), t.x, t.y, t.z + 5.0);
+		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		ship->draw(prog);
+		MV->popMatrix();
+	}
+
+	MV->popMatrix();
+	P->popMatrix();
+
+	// Reset light position
+	glUniform3f(prog->getUniform("lightPos"), 0.0f, 0.0f, 0.0f);
+
+}
+
 static void init()
 {
 	GLSL::checkVersion();
@@ -204,7 +237,7 @@ static void init()
 // If there was no collision, returns ``-1``.
 int checkShipCollisions(){
 	// The ship has invincibility while performing an animation
-	if (ship->getCurrAnim() != NONE){
+	if (ship->isInvincible()){
 		return -1;
 	}
 	
@@ -277,6 +310,11 @@ void render()
 	if (collision != -1){
 		// Do something when a collision is detected...
 		cout << "Ship collided with asteroid " << collision << " at time " << t << endl;
+		numLives--;
+
+		// Start invincibility
+		ship->setInvincible();
+
 	}
 
 	checkBeamCollisions();
@@ -314,13 +352,14 @@ void render()
 
 	// Apply camera transforms
 	P->pushMatrix();
+
+	// Draw HUD before applying projection matrix
+	drawHUD(prog, MV, P);
+
 	camera->applyProjectionMatrix(P);
 	// camera->applyOrthogonalMatrix(P);
 	MV->pushMatrix();
 	camera->applyViewMatrix(MV);
-
-	// Use an orthogonal projection for the HUD objects
-	// But it might be easier to use a perspective that is very far away (looks close enough to projection)
 
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 
@@ -446,6 +485,7 @@ void render()
 	// Draw grid
 	if (drawGrid){
 		float gridSizeHalf = 100.0f;
+		float gridOffset = -3.0f;
 		int gridNx = 20;
 		int gridNz = 20;
 
@@ -455,14 +495,14 @@ void render()
 		for(int i = 0; i < gridNx+1; ++i) {
 			float alpha = i / (float)gridNx;
 			float x = (1.0f - alpha) * (-gridSizeHalf) + alpha * gridSizeHalf;
-			glVertex3f(x, 0, -gridSizeHalf);
-			glVertex3f(x, 0,  gridSizeHalf);
+			glVertex3f(x, gridOffset, -gridSizeHalf);
+			glVertex3f(x, gridOffset,  gridSizeHalf);
 		}
 		for(int i = 0; i < gridNz+1; ++i) {
 			float alpha = i / (float)gridNz;
 			float z = (1.0f - alpha) * (-gridSizeHalf) + alpha * gridSizeHalf;
-			glVertex3f(-gridSizeHalf, 0, z);
-			glVertex3f( gridSizeHalf, 0, z);
+			glVertex3f(-gridSizeHalf, gridOffset, z);
+			glVertex3f( gridSizeHalf, gridOffset, z);
 		}
 		glEnd();
 	}
