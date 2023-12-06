@@ -19,6 +19,7 @@
 #include "Asteroid.h"
 #include "Star.h"
 #include "Beam.h"
+#include "Particle.h"
 
 using namespace std;
 
@@ -41,12 +42,15 @@ double tGlobal = 0.0f;
 
 shared_ptr<Program> prog;
 shared_ptr<Camera> camera;
+shared_ptr<Camera> fpcam;
 shared_ptr<Ship> ship;
 
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
 vector<shared_ptr<Star> > stars;
 shared_ptr<Shape> bsModel;
+
+shared_ptr<Shape> frustum;
 
 bool shootBeam = false;
 vector<shared_ptr<Beam> > beams;
@@ -98,11 +102,11 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 		isPressed[key] = false;
 	}
 
-	if (action == GLFW_RELEASE && (key == 'F' || key == 'f')){
+	if ((key == 'J' || key == 'j') && (action == GLFW_RELEASE) && (ship->getCurrAnim() == NONE) && !pause){
 		shootBeam = true;
 	}
 
-	if (action == GLFW_PRESS && (key == 'P' || key == 'p')){
+	if ((key == 'P' || key == 'p') && (action == GLFW_PRESS)){
 		pause = !pause;
 	}
 }
@@ -136,22 +140,21 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
-void drawHUD(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV){
+void drawHUD(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV, double time){
 	// Draw the lives
 	// Use an orthogonal projection for the HUD objects
 	// But it might be easier to use a perspective that is very far away (looks close enough to projection)
 	P->pushMatrix();
-	MV->pushMatrix();
-
 	camera->applyOrthogonalMatrix(P);
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 
-
+	float rot = -M_PI + time * 1.5f;
+	// Draw the spaceship's lives
 	for (int i = 0; i < numLives; i++){
 		MV->pushMatrix();
 		glm::vec3 t(-45.0f + 5.5f * i, 42.5f, -3.0f);
 		MV->translate(t);
-		MV->rotate(-M_PI + tGlobal, 0.0f, 1.0f, 0.0f);
+		MV->rotate(rot, 0.0f, 1.0f, 0.0f);
 		MV->rotate(-M_PI_2, 1.0f, 0.0f, 0.0f);
 	
 		glUniform3f(prog->getUniform("lightPos"), t.x, t.y, t.z + 5.0);
@@ -160,12 +163,10 @@ void drawHUD(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &P, shared_ptr<M
 		MV->popMatrix();
 	}
 
-	MV->popMatrix();
-	P->popMatrix();
-
 	// Reset light position
 	glUniform3f(prog->getUniform("lightPos"), 0.0f, 0.0f, 0.0f);
 
+	P->popMatrix();
 }
 
 static void init()
@@ -206,6 +207,11 @@ static void init()
 	bsModel->loadMesh(RESOURCE_DIR + "unit-sphere.obj");
 	bsModel->init();
 
+	// Initialize the frustrum model	
+	frustum = make_shared<Shape>();
+	frustum->loadMesh(RESOURCE_DIR + "frustum.obj");
+	frustum->init();
+
 	// Initialize asteroid meshes. We only want to load them in once:
 	for (int i = 0; i < NUM_ASTEROID_MODELS; i++){
 		asteroidModels.push_back(make_shared<Shape>());
@@ -222,7 +228,10 @@ static void init()
 
 	// Initialize the beam objects:
 	initBeams();
-	
+
+	// Initialize the cube map
+	// cm = make_shared<CubeMap>(RESOURCE_DIR);
+
 	// Initialize time.
 	glfwSetTime(0.0);
 	
@@ -358,7 +367,7 @@ void render()
 	P->pushMatrix();
 
 	// Draw HUD before applying projection matrix
-	drawHUD(prog, MV, P);
+	drawHUD(prog, MV, P, t);
 
 	camera->applyProjectionMatrix(P);
 	// camera->applyOrthogonalMatrix(P);

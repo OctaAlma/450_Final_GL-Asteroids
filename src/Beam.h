@@ -12,7 +12,7 @@
 #define BEAM_LIFE 2.0 // Maximum time a beam will live (in seconds)
 #define BEAM_SPEED 250.0f
 #define BEAM_THICKNESS 3.0f
-#define BEAM_LENGTH 6.0f
+#define BEAM_LENGTH 10.0f
 #define BEAM_PADDING 0.5f
 
 extern double tGlobal;

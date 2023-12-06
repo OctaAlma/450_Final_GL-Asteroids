@@ -108,9 +108,7 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 		if (p > 1.0f){
 			p = 2.0 - p;
 		}
-
-		cout << p << endl;
-
+		
 		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f - p, 1.0f - p);
 	}else{
 		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
@@ -473,5 +471,5 @@ void Ship::performSomersault()
 }
 
 std::shared_ptr<BoundingSphere> Ship::getBoundingSphere(){
-	return std::make_shared<BoundingSphere>(1.5f, getPos());
+	return std::make_shared<BoundingSphere>(1.0f, getPos());
 }

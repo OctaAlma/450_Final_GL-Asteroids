@@ -113,3 +113,9 @@ footer{
     text-align: center;
     color: lightgrey;
 }
+
+kbd{
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+}
