@@ -31,14 +31,14 @@ void Ship::loadMesh(const std::string &meshName){
 	Shape::loadMesh(meshName);  
 }
 
-double startInvincible = -1.0;
+double timeHit = -1.0;
 
 void Ship::setInvincible(){
-	startInvincible = tGlobal;
+	timeHit = tGlobal;
 }
 
 bool Ship::isInvincible(){
-	return (tGlobal < startInvincible + ININCIBILITY_TIME) || (currAnim != NONE);
+	return (tGlobal < timeHit + INVINCIBILITY_TIME);
 }
 
 void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
@@ -96,7 +96,25 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	}
 
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
-	glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
+
+	if (this->isInvincible()){
+		// At time tHit                         -> white
+		// At time tHit + INVINCIBLE_TIME / 2.0 -> red
+		// At time tHit + INVINCIBLE_TIME       -> white
+
+
+		float p = 2.0 * (tGlobal - timeHit) / (INVINCIBILITY_TIME);
+
+		if (p > 1.0f){
+			p = 2.0 - p;
+		}
+
+		cout << p << endl;
+
+		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f - p, 1.0f - p);
+	}else{
+		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
+	}
 
 	this->draw(prog);
 

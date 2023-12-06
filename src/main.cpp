@@ -237,7 +237,7 @@ static void init()
 // If there was no collision, returns ``-1``.
 int checkShipCollisions(){
 	// The ship has invincibility while performing an animation
-	if (ship->isInvincible()){
+	if (ship->isInvincible() || (ship->getCurrAnim() != NONE)){
 		return -1;
 	}
 	
@@ -312,6 +312,10 @@ void render()
 		cout << "Ship collided with asteroid " << collision << " at time " << t << endl;
 		numLives--;
 
+		if (numLives < 0){
+			// DO SOMETHING FOR GAME OVER
+		}
+
 		// Start invincibility
 		ship->setInvincible();
 
@@ -382,6 +386,8 @@ void render()
 	ship->drawShip(prog, MV);
 
 	if (drawBoundingBox){
+		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
+
 		// Draw the ship's bounding sphere:
 		MV->pushMatrix();
 		

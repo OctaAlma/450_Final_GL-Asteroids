@@ -12,7 +12,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 #define UNIT 20.0f
-#define ININCIBILITY_TIME 1.0 // The number of seconds the ship is invincible after a collision
+#define INVINCIBILITY_TIME 1.0 // The number of seconds the ship is invincible after a collision
 
 extern double tGlobal;
 extern bool drawBoundingBox;
