@@ -45,6 +45,7 @@ shared_ptr<Ship> ship;
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
 vector<shared_ptr<Star> > stars;
+shared_ptr<Shape> bsModel;
 
 bool shootBeam = false;
 vector<shared_ptr<Beam> > beams;
@@ -167,6 +168,11 @@ static void init()
 	ship->loadMesh(RESOURCE_DIR + "ship.obj");
 	ship->init();
 
+	// Initialize the bounding sphere model
+	bsModel = make_shared<Shape>();
+	bsModel->loadMesh(RESOURCE_DIR + "unit-sphere.obj");
+	bsModel->init();
+
 	// Initialize asteroid meshes. We only want to load them in once:
 	for (int i = 0; i < NUM_ASTEROID_MODELS; i++){
 		asteroidModels.push_back(make_shared<Shape>());
@@ -201,33 +207,18 @@ int checkShipCollisions(){
 	if (ship->getCurrAnim() != NONE){
 		return -1;
 	}
+	
+	// Bounding sphere of the ship:
+	auto bsS = ship->getBoundingSphere();
 
-	std::shared_ptr<MatrixStack> MS = make_shared<MatrixStack>(); // A matrix stack to store the transformations from ship coords to world coords
-	auto bbS = ship->getBoundingBox(); // The bounding box of the ship mesh in mesh coords
-
-	// Apply all transformations to go from ship mesh to world coords:
-	MS->pushMatrix();
-	ship->applyMVTransforms(MS);
-
-	// Transform the bounding box coordinates from ship mesh coords to world coords
-	bbS->updateCoords(MS);
-
-	std::shared_ptr<MatrixStack> MA = make_shared<MatrixStack>(); // A matrix stack to store the transformations from asteroid coords to world coords 
 	for (int i = 0; i < asteroids.size(); i++){
 		auto a = asteroids.at(i);
-		auto bbA = a->getBoundingBox();
+		auto bsA = a->getBoundingSphere();
 
-		MA->pushMatrix();
-		a->applyMVTransforms(MA);
-		bbA->updateCoords(MA); // the current asteroid's bounding box will now be in world coordinates 
-		MA->popMatrix();
-
-		if (bbA->collided(bbS) || bbS->collided(bbA)){
+		if (bsS->collided(*bsA.get())){
 			return i;
 		}
 	}
-
-	MS->popMatrix();
 
 	return -1;
 }
@@ -238,22 +229,18 @@ void checkBeamCollisions(){
 	std::vector<std::shared_ptr<Asteroid> > newChildren;
 
 	for (int i = 0; i < beams.size(); i++){
-		
-		if (beams.at(i)->isAlive() == false){ continue; }
+		auto b = beams.at(i);
+		if (b->isAlive() == false){ continue; }
 
-		auto bbB = beams.at(i)->getBoundingBox();
-				
+		glm::vec3 start = b->getStart();
+		glm::vec3 end = b->getEnd();
+		
 		std::shared_ptr<MatrixStack> MA = make_shared<MatrixStack>(); // A matrix stack to store the transformations from asteroid coords to world coords 
 		for (int j = 0; j < asteroids.size(); j++){
 			auto a = asteroids.at(j);
-			auto bbA = a->getBoundingBox();
+			auto bs = a->getBoundingSphere();
 
-			MA->pushMatrix();
-			a->applyMVTransforms(MA);
-			bbA->updateCoords(MA); // the current asteroid's bounding box will now be in world coordinates 
-			MA->popMatrix();
-
-			if (bbA->collided(bbB) || bbB->collided(bbA)){
+			if (bs->collided(start, end)){
 				std::cout << "Beam " << i << " collided with asteroid " << j << endl; 
 				beams.at(i)->setDead();
 
@@ -269,6 +256,7 @@ void checkBeamCollisions(){
 		}
 	}
 
+	// Add child asteroids to the asteroids array
 	for (int i = 0; i < newChildren.size(); i++){
 		asteroids.push_back(newChildren.at(i));
 	}
@@ -281,8 +269,6 @@ void render()
 
 	if (!pause){
 		tGlobal = t;
-	}else{
-		cout << "tGlobal: " << tGlobal << endl;
 	}
 
 	// Check if the player has collided with an asteroid
@@ -290,12 +276,14 @@ void render()
 
 	if (collision != -1){
 		// Do something when a collision is detected...
-		cout << "Ship collided with asteroid at time " << t << endl;
+		cout << "Ship collided with asteroid " << collision << " at time " << t << endl;
 	}
 
 	checkBeamCollisions();
 
-	ship->moveShip(isPressed);
+	if (!pause){
+		ship->moveShip(isPressed);
+	}
 	
 	// Get current frame buffer size.
 	int width, height;
@@ -345,12 +333,38 @@ void render()
 
 	// Draw the asteroids
 	for (int i = 0; i < asteroids.size(); i++){
-		asteroids.at(i)->move();
+		if (!pause){
+			asteroids.at(i)->move();
+		}
 		asteroids.at(i)->drawAsteroid(prog, MV);
 	}
 
 	// Draw the ship
 	ship->drawShip(prog, MV);
+
+	if (drawBoundingBox){
+		// Draw the ship's bounding sphere:
+		MV->pushMatrix();
+		
+		auto bs = ship->getBoundingSphere();
+		MV->translate(bs->center);
+		MV->scale(bs->radius);
+		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		bsModel->draw(prog);
+		MV->popMatrix();
+
+		// Draw each asteroid's bounding box:
+		for (auto a = asteroids.begin(); a != asteroids.end(); ++a){
+			bs = (*a)->getBoundingSphere();
+			MV->pushMatrix();
+			MV->translate(bs->center);
+			MV->scale(bs->radius);
+			glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+			bsModel->draw(prog);
+			MV->popMatrix();
+		}
+	}
+
 	prog->unbind();
 	
 	// Draw the frame and the grid with OpenGL 1.x (no GLSL)
@@ -402,44 +416,9 @@ void render()
 	for (auto b = beams.begin(); b != beams.end(); ++b){ 
 		(*b)->draw(); 
 	}
+
 	glPopMatrix();
 	MV->popMatrix();
-	
-	if (drawBoundingBox){
-		// Draw the ship's bounding box:
-		MV->pushMatrix();
-		ship->applyMVTransforms(MV);
-		MV->rotate(-ship->getRoll(), 0, 0, 1);
-		glPushMatrix();
-		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-		ship->getBoundingBox()->draw();
-		glPopMatrix();
-		MV->popMatrix();
-
-		// Draw each asteroid's bounding box:
-		for (auto a = asteroids.begin(); a != asteroids.end(); ++a){
-			MV->pushMatrix();
-			(*a)->applyMVTransforms(MV);
-			glPushMatrix();
-			glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-			(*a)->getBoundingBox()->draw();
-			glPopMatrix();
-			MV->popMatrix();
-		}
-
-		// Draw the beam's bounding box
-		MV->pushMatrix();
-		glPushMatrix();
-		glLoadMatrixf(glm::value_ptr(MV->topMatrix()));
-		for (auto b = beams.begin(); b != beams.end(); ++b){ 
-			auto bb = (*b)->getBoundingBox();
-			if (bb != NULL) { 
-				bb->draw(); 
-			}
-		}
-		glPopMatrix();
-		MV->popMatrix();
-	}
 
 	// THIS NEEDS TO BE CALLED AFTER DRAWING THE SHIP AND BOUNDING BOX
 	ship->updatePrevPos();

@@ -7,13 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
-#include "BoundingBox.h"
 
 #define MAX_BEAMS 10
 #define BEAM_LIFE 2.0 // Maximum time a beam will live (in seconds)
-#define BEAM_SPEED 150.0f
+#define BEAM_SPEED 250.0f
 #define BEAM_THICKNESS 3.0f
-#define BEAM_LENGTH 5.0f
+#define BEAM_LENGTH 6.0f
 #define BEAM_PADDING 0.5f
 
 extern double tGlobal;
@@ -30,7 +29,8 @@ public:
     bool isAlive();
     glm::vec3 getDir() { return dir; }
     void reset(glm::vec3 origin, glm::vec3 dir);
-    std::shared_ptr<BoundingBox> getBoundingBox();
+    glm::vec3 getStart();
+    glm::vec3 getEnd();
 
 private:
     glm::vec3 origin;

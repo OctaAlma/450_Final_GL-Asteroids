@@ -45,8 +45,10 @@ void Beam::draw(){
 
     glLineWidth(thickness);
     glColor3f(1.0f, 0.0f, 0.0f);
-    // float p = (tGlobal - tCreated) / (BEAM_LIFE);
-    // glColor3f(1.0f - p, 0.0f, 0.0f);
+
+    // The following causes the beam's color to fade 
+    float p = (tGlobal - tCreated) / (BEAM_LIFE);
+    glColor3f(1.0f - p, 0.0f, 0.0f);
 
     glBegin(GL_LINES);
 
@@ -62,13 +64,14 @@ void Beam::reset(glm::vec3 origin, glm::vec3 dir){
     tCreated = tGlobal;
 }
 
-// BOUNDING BOX IS BROKEN ATM
-std::shared_ptr<BoundingBox> Beam::getBoundingBox(){
-    if (isAlive() == false) { return NULL; }
-
+glm::vec3 Beam::getStart(){
     vec3 disp = speed * (float)(tGlobal - tCreated) * dir;
-    vec3 min = origin + disp;
-    vec3 max = origin + disp + length * glm::normalize(dir);
+    vec3 start = origin + disp;
+    return start;
+}
 
-    return std::make_shared<BoundingBox>(min, max);;
+glm::vec3 Beam::getEnd(){
+    vec3 disp = speed * (float)(tGlobal - tCreated) * dir;
+    vec3 end = origin + disp + length * normalize(dir);
+    return end;
 }

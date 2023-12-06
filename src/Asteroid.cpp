@@ -27,7 +27,6 @@ Asteroid::Asteroid(std::shared_ptr<Shape> &model){
     this->speed = randomFloat(MIN_ASTEROID_SPEED, MAX_ASTEROID_SPEED);
     this->size = randomFloat(MIN_ASTEROID_SIZE, MAX_ASTEROID_SIZE);
     this->model = model;
-    this->bb = std::make_shared<BoundingBox>(this->model->getPosBuf());
 }
 
 void Asteroid::setSize(float size){ this->size = size; }
@@ -39,6 +38,7 @@ void Asteroid::setColor(glm::vec3 color){ this->color = color; }
 
 void Asteroid::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
     MV->translate(this->pos);
+    MV->translate(0.0f, 0.0f, -5.0f * size / (MAX_ASTEROID_SIZE - MIN_ASTEROID_SIZE));
     MV->scale(size, size, size);
 }
 
@@ -98,8 +98,8 @@ void Asteroid::randomDir(){
     }
 }
 
-std::shared_ptr<BoundingBox> Asteroid::getBoundingBox(){
-    return std::make_shared<BoundingBox>(bb->minCoords, bb->maxCoords);
+std::shared_ptr<BoundingSphere> Asteroid::getBoundingSphere(){
+    return std::make_shared<BoundingSphere>(this->size / 0.001, this->pos);
 }
 
 

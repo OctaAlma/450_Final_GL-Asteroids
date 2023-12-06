@@ -2,7 +2,7 @@
 #ifndef ASTEROID_H
 #define ASTEROID_H
 
-#include "BoundingBox.h"
+#include "BoundingSphere.h"
 #include "Shape.h"
 #include "MatrixStack.h"
 
@@ -46,7 +46,7 @@ class Asteroid
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void randomPos();
         void randomDir();
-        std::shared_ptr<BoundingBox> getBoundingBox();
+        std::shared_ptr<BoundingSphere> getBoundingSphere();
         std::vector<std::shared_ptr<Asteroid>> getChildren();
     private:
         glm::vec3 pos;
@@ -54,7 +54,6 @@ class Asteroid
         glm::vec3 color;
         float size;
         float speed;
-        std::shared_ptr<BoundingBox> bb = NULL;
 };
 
 #endif

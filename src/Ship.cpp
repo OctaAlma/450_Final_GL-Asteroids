@@ -29,7 +29,6 @@ vector<pair<float,float> > usTable; // A table containing pairs of (u, s)
 // Overrides the original loadMesh(...) function so that the Ship's bounding box can be initialized
 void Ship::loadMesh(const std::string &meshName){
 	Shape::loadMesh(meshName);  
-	bb = make_shared<BoundingBox>(this->posBuf);
 }
 
 void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
@@ -101,7 +100,16 @@ void Ship::updatePrevPos(){
 	p_prev = p;
 }
 
-glm::vec3 Ship::getPos(){ return this->p; }
+glm::vec3 Ship::getPos(){
+	auto MV = make_shared<MatrixStack>();
+	MV->pushMatrix();
+	MV->rotate(M_PI, 0, 1, 0);
+	MV->scale(0.7f, 0.7f, 0.7f);
+	MV->translate(p_prev);
+	MV->rotate(yaw, 0, 1, 0);
+	MV->translate(p - p_prev);
+	return MV->topMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); 
+}
 
 glm::vec3 Ship::getVel(){ return this->v; }
 
@@ -436,6 +444,6 @@ void Ship::performSomersault()
 	if (currAnim == NONE){ setKeyframes(this->p, SOMERSAULT); }
 }
 
-std::shared_ptr<BoundingBox> Ship::getBoundingBox(){
-	return make_shared<BoundingBox>(bb->minCoords, bb->maxCoords);
+std::shared_ptr<BoundingSphere> Ship::getBoundingSphere(){
+	return std::make_shared<BoundingSphere>(1.5f, getPos());
 }

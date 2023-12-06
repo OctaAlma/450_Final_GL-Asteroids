@@ -2,7 +2,7 @@
 #ifndef SHIP_H
 #define SHIP_H
 
-#include "BoundingBox.h"
+#include "BoundingSphere.h"
 #include "Shape.h"
 #include "MatrixStack.h"
 
@@ -40,7 +40,7 @@ class Ship: public Shape
         void applyMVTransforms(std::shared_ptr<MatrixStack> &MV);
         void updatePrevPos();
 
-        std::shared_ptr<BoundingBox> getBoundingBox();
+        std::shared_ptr<BoundingSphere> getBoundingSphere();
         
     private:
         glm::vec3 p_prev; // The previous position of the ship
@@ -49,13 +49,10 @@ class Ship: public Shape
         float roll = 0.0f;
         float yaw = 0.0f;
         int currAnim = NONE;
-        std::shared_ptr<BoundingBox> bb = NULL;
-
+        
         glm::mat4 generateEMatrix();
         void processKeys(bool keyPresses[256]);
         void setKeyframes(glm::vec3 p, int animType);
-        
-        
 };
 
 #endif
