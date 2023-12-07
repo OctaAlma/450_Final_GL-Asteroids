@@ -19,7 +19,7 @@
 #include "Asteroid.h"
 #include "Star.h"
 #include "Beam.h"
-#include "Particle.h"
+#include "Explosion.h"
 
 using namespace std;
 
@@ -41,13 +41,20 @@ bool isPressed[512] = {0};
 double tGlobal = 0.0f;
 
 shared_ptr<Program> prog;
+
 shared_ptr<Camera> camera;
 shared_ptr<Camera> fpcam;
 shared_ptr<Ship> ship;
 
+shared_ptr<Program> pProg;
+shared_ptr<Texture> alphaTex;
+
 vector<shared_ptr<Shape> > asteroidModels;
 vector<shared_ptr<Asteroid> > asteroids;
 vector<shared_ptr<Star> > stars;
+
+vector<shared_ptr<Explosion> > explosions;
+
 shared_ptr<Shape> bsModel;
 
 shared_ptr<Shape> frustum;
@@ -140,7 +147,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
-void drawHUD(shared_ptr<Program> &prog, shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV, double time){
+void drawHUD(shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV, double time){
 	// Draw the lives
 	// Use an orthogonal projection for the HUD objects
 	// But it might be easier to use a perspective that is very far away (looks close enough to projection)
@@ -194,6 +201,21 @@ static void init()
 	prog->addAttribute("aPos");
 	prog->addAttribute("aNor");
 	prog->setVerbose(false);
+
+	pProg = make_shared<Program>();
+	pProg->setShaderNames(RESOURCE_DIR + "vert.glsl", RESOURCE_DIR + "frag.glsl");
+	pProg->setVerbose(true);
+	pProg->init();
+	pProg->addUniform("P");
+	pProg->addUniform("MV");
+	pProg->addUniform("screenSize");
+	pProg->addUniform("alphaTexture");
+	pProg->addAttribute("aPos");
+	pProg->addAttribute("aAlp");
+	pProg->addAttribute("aCol");
+	pProg->addAttribute("aSca");
+
+	pProg->setVerbose(false);
 	
 	camera = make_shared<Camera>();
 	camera->setInitDistance(25.0f);
@@ -229,8 +251,12 @@ static void init()
 	// Initialize the beam objects:
 	initBeams();
 
-	// Initialize the cube map
-	// cm = make_shared<CubeMap>(RESOURCE_DIR);
+	// Initialize the particle alpha texture
+	alphaTex = make_shared<Texture>();
+	alphaTex->setFilename(RESOURCE_DIR + "alpha.jpg");
+	alphaTex->init();
+	alphaTex->setUnit(0);
+	alphaTex->setWrapModes(GL_REPEAT, GL_REPEAT);
 
 	// Initialize time.
 	glfwSetTime(0.0);
@@ -285,6 +311,14 @@ void checkBeamCollisions(){
 			if (bs->collided(start, end)){
 				std::cout << "Beam " << i << " collided with asteroid " << j << endl; 
 				beams.at(i)->setDead();
+
+				// Create an explosion at the asteroid's center
+				glm::vec3 aCol = a->getColor();
+				Eigen::Vector3f asteroidCol(aCol.x, aCol.y, aCol.z); 
+
+				auto e = make_shared<Explosion>(RESOURCE_DIR, asteroidCol);
+				e->setCenter(a->getPos());
+				explosions.push_back(e);
 
 				auto children = a->getChildren();
 				if (!children.empty()){
@@ -367,10 +401,9 @@ void render()
 	P->pushMatrix();
 
 	// Draw HUD before applying projection matrix
-	drawHUD(prog, MV, P, t);
+	drawHUD(P, MV, t);
 
 	camera->applyProjectionMatrix(P);
-	// camera->applyOrthogonalMatrix(P);
 	MV->pushMatrix();
 	camera->applyViewMatrix(MV);
 
@@ -420,6 +453,19 @@ void render()
 	}
 
 	prog->unbind();
+
+	// Draw any explosions
+	for (int i = 0; i < explosions.size(); i++){
+
+		if (!explosions.at(i)->isAlive()){
+			explosions.erase(explosions.begin() + i);
+			i--;
+			continue;
+		}
+
+		explosions.at(i)->step();
+		explosions.at(i)->draw(P, MV, width, height, alphaTex, pProg);
+	}
 	
 	// Draw the frame and the grid with OpenGL 1.x (no GLSL)
 	
@@ -543,6 +589,7 @@ string lowercase(string s){
 
 	return s;
 }
+
 
 void processInputs(int argc, char **argv){
 	RESOURCE_DIR = argv[1] + string("/");

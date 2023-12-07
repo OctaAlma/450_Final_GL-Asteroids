@@ -37,6 +37,7 @@ class Asteroid
         void setDir(glm::vec3 dir);
         void setPos(glm::vec3 pos);
         void setColor(glm::vec3 color);
+        glm::vec3 getColor() { return this->color; }
 
         std::shared_ptr<Shape> model;
         void drawAsteroid(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV);

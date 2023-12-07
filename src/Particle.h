@@ -11,6 +11,10 @@
 
 #include <Eigen/Dense>
 
+#define PARTICLE_LIFESPAN 1.0
+
+extern double tGlobal;
+
 class MatrixStack;
 class Program;
 class Texture;
@@ -19,15 +23,12 @@ class Particle
 {
 public:
 	
-	Particle(int index);
+	Particle(int index, GLuint colBufID, GLuint scaBufID, std::vector<float> &posBuf, std::vector<float> &colBuf, 
+		std::vector<float> &alpBuf, std::vector<float> &scaBuf, Eigen::Vector3f col);
 	virtual ~Particle();
-	void rebirth(float t, const bool *keyToggles);
-	void step(float t, float h, const Eigen::Vector3f &g, const bool *keyToggles);
+	void rebirth();
+	void step(float t, float h, const Eigen::Vector3f &g);
 	
-	// Static, shared by all particles
-	static void init(int n);
-	static void draw(const std::vector< std::shared_ptr<Particle> > &particles,
-					 std::shared_ptr<Program> prog);
 	static float randFloat(float l, float h);
 	
 private:
@@ -45,16 +46,6 @@ private:
 	Eigen::Map<Eigen::Vector3f> x; // position (mapped to a location in posBuf)
 	Eigen::Vector3f v;             // velocity
 	float &alpha;                  // mapped to a location in alpBuf
-	
-	// Static, shared by all particles
-	static std::vector<float> posBuf;
-	static std::vector<float> colBuf;
-	static std::vector<float> alpBuf;
-	static std::vector<float> scaBuf;
-	static GLuint posBufID;
-	static GLuint colBufID;
-	static GLuint alpBufID;
-	static GLuint scaBufID;
 };
 
 #endif
