@@ -73,3 +73,16 @@ void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV) const
 	MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
 	MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));
 }
+
+void Camera::applyFPSViewMatrix(std::shared_ptr<MatrixStack> MV) const
+{
+	MV->translate(0.0f, -1.0f, 2.0f);
+	MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
+	MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));	
+}
+
+void Camera::applyTopDownViewMatrix(std::shared_ptr<MatrixStack> MV) const
+{
+	MV->rotate(M_PI_2, glm::vec3(1.0f, 0.0f, 0.0f));
+	MV->translate(0.0f, -220.0f, 0.0f);
+}

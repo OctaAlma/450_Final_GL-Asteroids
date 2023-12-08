@@ -21,7 +21,7 @@ Particle::Particle(int index, GLuint colBufID, GLuint scaBufID, std::vector<floa
 {
 	// Random fixed properties
 	color = col;
-	scale = randFloat(4e20f, 5e20f);
+	scale = randFloat(MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE);
 	lifespan = randFloat(MIN_PARTICLE_LIFESPAN, MAX_PARTICLE_LIFESPAN);
 	
 	// Send color data to GPU
@@ -100,6 +100,12 @@ float Particle::randFloat(float l, float h)
 }
 
 float Particle::percentageLived(){
+
+	if (tGlobal > tEnd){
+		return 1.0f;
+	}
+
 	float per = ((float)(tEnd - tGlobal) / lifespan);
-	return std::max(per, 0.0f);
+
+	return std::min(per, 1.0f);
 }

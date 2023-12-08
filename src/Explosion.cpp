@@ -67,6 +67,7 @@ void Explosion::draw(std::shared_ptr<MatrixStack> &P,
 
     MV->pushMatrix();
     MV->translate(center);
+	MV->scale(2.0f, 2.0f, 2.0f);
 	
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
@@ -114,4 +115,16 @@ void Explosion::drawParticles(std::shared_ptr<Program> &prog)
 	glDisableVertexAttribArray(prog->getAttribute("aAlp"));
 	glDisableVertexAttribArray(prog->getAttribute("aPos"));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void Explosion::sendColorBuf(){
+	// Send color buffer to GPU
+	glBindBuffer(GL_ARRAY_BUFFER, colBufID);
+	glBufferData(GL_ARRAY_BUFFER, colBuf.size()*sizeof(float), &colBuf[0], GL_STATIC_DRAW);
+}
+
+void Explosion::sendScaleBuf(){
+	// Send scale buffer to GPU
+	glBindBuffer(GL_ARRAY_BUFFER, scaBufID);
+	glBufferData(GL_ARRAY_BUFFER, scaBuf.size()*sizeof(float), &scaBuf[0], GL_STATIC_DRAW);
 }

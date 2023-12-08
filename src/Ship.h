@@ -16,6 +16,7 @@
 #define INVINCIBILITY_TIME 1.0 // The number of seconds the ship is invincible after a collision
 
 extern double tGlobal;
+extern double score;
 extern bool drawBoundingBox;
 
 enum ANIMATIONS{

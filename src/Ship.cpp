@@ -54,22 +54,7 @@ bool Ship::isInvincible(){
 
 void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	// Translate so that the ship intersects with the ground:
-	MV->translate(0.0f, -0.3f, 0.0f);
-	
-	// Scale the size of the ship:
-	MV->scale(0.7f, 0.7f, 0.7f);
-
-	// Rotate the ship about the y axis (it will be facing the wrong direction otherwise)
-	MV->rotate(M_PI, 0, 1, 0);
-	
-	MV->translate(p_prev);
-	MV->rotate(yaw, 0, 1, 0);
-	MV->translate(p - p_prev);
-
-	// The code below is necessary for the camera to follow the ship when it rolls:
-	if (currAnim == LEFT_ROLL || currAnim == RIGHT_ROLL){
-		MV->translate(generateEMatrix()[3]);
-	}
+	MV->multMatrix(getModelMatrix().topMatrix());
 }
 
 MatrixStack Ship::getModelMatrix(){
@@ -79,7 +64,7 @@ MatrixStack Ship::getModelMatrix(){
 	M.translate(0.0f, -0.3f, 0.0f);
 	
 	// Scale the size of the ship:
-	M.scale(0.7f, 0.7f, 0.7f);
+	M.scale(1.25f, 1.25f, 1.25f);
 
 	// Rotate the ship about the y axis (it will be facing the wrong direction otherwise)
 	M.rotate(M_PI, 0, 1, 0);
@@ -548,7 +533,10 @@ void Ship::drawExplosion(std::shared_ptr<MatrixStack> &P, std::shared_ptr<Matrix
 	e->step();
 	MV->pushMatrix();
 	applyMVTransforms(MV);
-	if (!e->isAlive()){ exit(0); }
+	if (!e->isAlive()){ 
+		cout << "FINAL SCORE: " << std::max(score - std::min(ceil(tGlobal), 2000.0), 0.0) << endl;
+		exit(0); 
+	}
 	e->draw(P, MV, width, height, alphaTex, prog);
 	MV->popMatrix();
 }

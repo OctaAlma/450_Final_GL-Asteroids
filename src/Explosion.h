@@ -48,6 +48,9 @@ protected:
     GLuint colBufID;
     GLuint alpBufID;
     GLuint scaBufID;
+
+    void sendColorBuf();
+    void sendScaleBuf();
 };
 
 #endif

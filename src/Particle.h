@@ -20,6 +20,9 @@
 #define PARTICLE_LIFESPAN 1.0
 #define PARTICLE_DECELERATION 0.9f
 
+#define MIN_PARTICLE_SIZE 1e25f
+#define MAX_PARTICLE_SIZE 1e30f
+
 extern double tGlobal;
 
 class MatrixStack;
@@ -61,8 +64,8 @@ private:
 	// Properties that changes every rebirth
 	float m;        // mass
 	float d;        // viscous damping
-	float tEnd;     // time this particle dies
-	float lifespan;
+	float tEnd = 0.0f;     // time this particle dies
+	float lifespan = 1.0f;
 	
 	// Properties that changes every frame
 	Eigen::Map<Eigen::Vector3f> x; // position (mapped to a location in posBuf)

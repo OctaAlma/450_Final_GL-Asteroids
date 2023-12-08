@@ -5,15 +5,15 @@ using std::cout, std::endl;
 
 #define EXHAUST_X_OFFSET 0.5f
 #define EXHAUST_Y_OFFSET 0.75f
-#define EXHAUST_Z_OFFSET -1.0f
+#define EXHAUST_Z_OFFSET -0.8f
 #define NUM_EXHAUST_PARTICLES 10000
 
 Eigen::Vector3f dirMin(-0.2f, -0.3f, -0.5f);
 Eigen::Vector3f dirMax(0.2f, 0.3f, -1.0f);
 float speedMin = 0.1f;
 float speedMax = 0.2f;
-float minls = 0.25f;
-float maxls = 0.5f;
+float minls = 0.1f;
+float maxls = 0.2f;
 
 ExhaustFire::ExhaustFire(const std::string RESOURCE_DIR, int e)
 {
@@ -118,7 +118,7 @@ void ExhaustFire::step(MatrixStack M, bool wPressed)
 
         particles[i]->step(p, dirMin, dirMax, speedMin, speedMax, ls);
 		float lived = 1.0f - particles[i]->percentageLived();
-        particles[i]->setColor(0.7f, 0.0f + lived / 2.0f, lived / 4.0f);
+        particles[i]->setColor(0.7f, 0.0f + lived, lived / 2.0f);
     }
 
 	sendColorBuf();
@@ -148,10 +148,3 @@ void ExhaustFire::draw(std::shared_ptr<MatrixStack> &P,
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 }
-
-void ExhaustFire::sendColorBuf(){
-	// Send color buffer to GPU
-	glBindBuffer(GL_ARRAY_BUFFER, colBufID);
-	glBufferData(GL_ARRAY_BUFFER, colBuf.size()*sizeof(float), &colBuf[0], GL_STATIC_DRAW);
-}
-

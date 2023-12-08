@@ -16,7 +16,6 @@ public:
     std::shared_ptr<Texture> &alphaTex, std::shared_ptr<Program> &prog);
 
 private:
-    void sendColorBuf();
     int exhaust;
     float roll;
 };

@@ -25,8 +25,14 @@ using namespace std;
 
 #define NUM_ASTEROID_MODELS 1
 
-bool thirdPersonCam = true;
-bool drawBoundingBox = true;
+enum CAMERA_TYPES{
+	THIRD_PERSON,
+	TOP_DOWN,
+	FIRST_PERSON
+};
+
+int camType = THIRD_PERSON;
+bool drawBoundingBox = false;
 bool drawGrid = true;
 bool drawAxisFrame = true;
 bool debug = false;
@@ -38,7 +44,10 @@ string RESOURCE_DIR = ""; // Where the resources are loaded from
 
 int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[512] = {0};
-double tGlobal = 0.0f;
+double score = 0.0;
+double tGlobal = 0.0;
+int NUM_ASTEROIDS = 25;
+
 
 shared_ptr<Program> prog;
 
@@ -115,6 +124,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 	if ((key == 'P' || key == 'p') && (action == GLFW_PRESS)){
 		pause = !pause;
+	}
+
+	if ((key == 'V' || key == 'v') && (action == GLFW_PRESS)){
+		camType = (camType + 1) % 3;
 	}
 }
 
@@ -297,6 +310,11 @@ void checkBeamCollisions(){
 
 	std::vector<std::shared_ptr<Asteroid> > newChildren;
 
+	if (asteroids.size() == 0 && ship->getCurrAnim() != GAME_OVER){
+		ship->gameOver(RESOURCE_DIR);
+		score += 2500 * numLives;
+	}
+
 	for (int i = 0; i < beams.size(); i++){
 		auto b = beams.at(i);
 		if (b->isAlive() == false){ continue; }
@@ -315,6 +333,7 @@ void checkBeamCollisions(){
 				}
 
 				beams.at(i)->setDead();
+				score += ceil(bs->radius) * 10;
 
 				// Create an explosion at the asteroid's center
 				glm::vec3 aCol = a->getColor();
@@ -412,16 +431,30 @@ void render()
 
 	camera->applyProjectionMatrix(P);
 	MV->pushMatrix();
-	camera->applyViewMatrix(MV);
-
-	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
-
-	if (thirdPersonCam == true){
-		auto E = make_shared<MatrixStack>();
+	
+	auto E = make_shared<MatrixStack>();
+	switch (camType)
+	{
+	case THIRD_PERSON:
+		camera->applyViewMatrix(MV);
 		ship->applyMVTransforms(E);
 		MV->rotate(M_PI, 0,1,0);
 		MV->multMatrix(glm::inverse(E->topMatrix()));
+		break;
+	case TOP_DOWN:
+		camera->applyTopDownViewMatrix(MV);
+		break;
+	case FIRST_PERSON:
+		camera->applyFPSViewMatrix(MV);
+		ship->applyMVTransforms(E);
+		MV->rotate(M_PI, 0,1,0);
+		MV->multMatrix(glm::inverse(E->topMatrix()));
+		break;
+	default:
+		break;
 	}
+
+	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 
 	// Draw the asteroids
 	for (int i = 0; i < asteroids.size(); i++){
@@ -565,7 +598,7 @@ void render()
 	// Draw grid
 	if (drawGrid){
 		float gridSizeHalf = 100.0f;
-		float gridOffset = -3.0f;
+		float gridOffset = -5.0f;
 		int gridNx = 20;
 		int gridNz = 20;
 
@@ -616,13 +649,25 @@ void processInputs(int argc, char **argv){
 	for (int i = 2; i < argc; i++){
 		string opt = lowercase(argv[i]);
 
-		if (opt == "-a"){ }
-		else if (opt == "-v"){ }
-		else if (opt == "-s"){ }
+		if (opt == "-a"){  
+			i += 1;
+			NUM_ASTEROIDS = std::stoi(argv[i]);
+		}
+		// else if (opt == "-v"){ 
+
+		// }
+		// else if (opt == "-s"){ 
+
+		// }
+		else if (opt == "-l"){
+			i += 1;
+			numLives = std::stoi(argv[i]);
+		}
 		else if (opt == "-b"){ drawBoundingBox = true; }
 		else if (opt == "-f"){ drawAxisFrame = true; }
 		else if (opt == "-g"){ drawGrid = true; }
-		else if (opt == "-t"){ thirdPersonCam = false; }
+		else if (opt == "-t"){ camType = TOP_DOWN; }
+		else if (opt == "-fp"){ camType = FIRST_PERSON; }
 	}
 }
 
@@ -631,12 +676,15 @@ int main(int argc, char **argv)
 	if(argc < 2) {
 		cout << "Usage: ./Final [RESOURCE_DIR]\n";
 		cout << "Options: -a X   - Sets the number of asteroids to X\n";
-		cout << "         -v X   - Sets the maximum asteroid velocity to X\n";
-		cout << "         -s X   - Sets the maximum asteroid size to X\n";
+		// cout << "         -v X   - Sets the maximum asteroid velocity to X\n";
+		// cout << "         -s X   - Sets the maximum asteroid size to X\n";
+		cout << "         -l X   - Sets the number of lives to X\n";
 		cout << "         -b     - Turns on bounding boxes around objects\n";
 		cout << "         -f     - Turns on the axis frame\n";
 		cout << "         -g     - Turns on the grid\n";
 		cout << "         -t     - Turns on top-down cam\n";
+		cout << "         -fp    - Turns on first-person cam\n";
+
 		return 0;
 	}
 

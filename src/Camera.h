@@ -30,6 +30,8 @@ public:
 	void applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const;
 	void applyOrthogonalMatrix(std::shared_ptr<MatrixStack> P) const;
 	void applyViewMatrix(std::shared_ptr<MatrixStack> MV) const;
+	void applyTopDownViewMatrix(std::shared_ptr<MatrixStack> MV) const;
+	void applyFPSViewMatrix(std::shared_ptr<MatrixStack> MV) const;
 	
 private:
 	float aspect;
