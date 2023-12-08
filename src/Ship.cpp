@@ -82,6 +82,7 @@ MatrixStack Ship::getModelMatrix(){
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
+	boundShip();
 
 	if ((tGlobal - tStart) * (2.0f + abs(v[2])) > (tEnd - tStart) && currAnim != NONE){
 		
@@ -141,11 +142,33 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	// p_prev = p;
 }
 
+#define MAX_X 120.0f
+#define MAX_Z 120.0f
+
+// Ensures that the ship is within map boundaries
+void Ship::boundShip(){
+	if (p.x > MAX_X){
+		p.x = -MAX_X;
+	}
+	else if (p.x < -MAX_X){
+		p.x = MAX_X;
+	}
+
+	if (p.z > MAX_Z){
+		p.z = -MAX_Z;
+	}
+	else if (p.z < -MAX_Z){
+		p.z = MAX_Z;
+	}
+}
+
+
 void Ship::drawFlames(std::shared_ptr<MatrixStack> &P, std::shared_ptr<MatrixStack> &MV, int width, int height, 
     std::shared_ptr<Texture> &alphaTex, std::shared_ptr<Program> &prog)
 {	
 	MatrixStack M = getModelMatrix();
 	glm::vec3 currPos = getPos();
+
 	MV->pushMatrix();
 	
 	M.pushMatrix();

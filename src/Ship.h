@@ -43,6 +43,8 @@ class Ship: public Shape
         void performBarrelRoll(char direction);
         void performSomersault();
         int getCurrAnim();
+
+        void boundShip();
         
         glm::vec3 getPos();
         glm::vec3 getVel();

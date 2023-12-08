@@ -8,8 +8,8 @@ using std::cout, std::endl;
 #define EXHAUST_Z_OFFSET -0.8f
 #define NUM_EXHAUST_PARTICLES 10000
 
-Eigen::Vector3f dirMin(-0.2f, -0.3f, -0.5f);
-Eigen::Vector3f dirMax(0.2f, 0.3f, -1.0f);
+glm::vec4 worldDirMin(-0.2f, -0.3f, -0.5f, 1.0f);
+glm::vec4 worldDirMax(0.2f, 0.3f, -1.0f, 1.0f);
 float speedMin = 0.1f;
 float speedMax = 0.2f;
 float minls = 0.1f;
@@ -96,6 +96,12 @@ float angleBetweenVecs(glm::vec3 v1, glm::vec3 v2)
 // right (-EXHAUST_X_OFFSET, EXHAUST_Y_OFFSET, EXHAUST_Z_OFFSET)
 void ExhaustFire::step(MatrixStack M, bool wPressed)
 {
+	glm::vec3 dirMinGlm = M.topMatrix() * worldDirMin;
+	glm::vec3 dirMaxGlm = M.topMatrix() * worldDirMax;
+
+	Eigen::Vector3f dirMin(dirMinGlm.x, dirMinGlm.y, dirMinGlm.z);
+	Eigen::Vector3f dirMax(dirMaxGlm.x, dirMaxGlm.y, dirMaxGlm.z);
+	
 	M.rotate(-roll, 0, 0, 1.0f);
 
 	if (exhaust == LEFT){

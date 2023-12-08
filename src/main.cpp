@@ -433,9 +433,15 @@ void render()
 	// Draw HUD before applying projection matrix
 	drawHUD(P, MV, t);
 
-	camera->applyProjectionMatrix(P);
+	if (camType == TOP_DOWN){ 
+		P->scale(0.4f, 0.4f, 0.4f);
+		camera->applyOrthogonalMatrix(P); 	
+	}
+	else { 	
+		camera->applyProjectionMatrix(P); 
+	}
+
 	MV->pushMatrix();
-	
 	auto E = make_shared<MatrixStack>();
 	switch (camType)
 	{

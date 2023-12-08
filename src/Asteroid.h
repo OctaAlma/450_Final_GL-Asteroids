@@ -12,8 +12,8 @@
 #include <glm/gtc/quaternion.hpp>
 
 // Note: MIN_X and MIN_Z are defined to be 
-#define MAX_X 150.0f
-#define MAX_Z 150.0f
+#define MAX_X 110.0f
+#define MAX_Z 110.0f
 
 #define MIN_ASTEROID_SPEED 0.1f
 #define MAX_ASTEROID_SPEED 0.5f
