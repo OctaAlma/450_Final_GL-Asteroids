@@ -24,6 +24,7 @@ extern double tGlobal;
 
 class Explosion {
 public:
+    Explosion(){}
     Explosion(std::string RESOURCE_DIR, Eigen::Vector3f col);
     void step();
     void draw(std::shared_ptr<MatrixStack> &P, std::shared_ptr<MatrixStack> &MV, int width, int height, 
@@ -33,7 +34,7 @@ public:
 
     bool isAlive() { return tGlobal < (tCreated + EXPLOSION_LIFESPAN); }
 
-private:
+protected:
     double tCreated = 0.0f;
     glm::vec3 center;
     std::vector< std::shared_ptr< Particle> > particles;

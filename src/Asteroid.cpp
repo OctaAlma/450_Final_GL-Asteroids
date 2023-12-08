@@ -99,7 +99,7 @@ void Asteroid::randomDir(){
 }
 
 std::shared_ptr<BoundingSphere> Asteroid::getBoundingSphere(){
-    return std::make_shared<BoundingSphere>(this->size / 0.001, this->pos);
+    return std::make_shared<BoundingSphere>(0.75 * this->size / 0.001, this->pos);
 }
 
 

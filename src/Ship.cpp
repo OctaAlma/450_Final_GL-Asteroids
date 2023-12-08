@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <utility> // For std::pair
+#include <thread>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -20,6 +21,8 @@ float smax = 0.0f;
 double tStart = 0.0f;
 double tEnd = 0.0f;
 
+bool wPressed, aPressed, dPressed, sPressed;
+
 // The higher the factor, the more distance the rolls will cover
 float factor = 3.0f; 
 
@@ -29,6 +32,14 @@ vector<pair<float,float> > usTable; // A table containing pairs of (u, s)
 // Overrides the original loadMesh(...) function so that the Ship's bounding box can be initialized
 void Ship::loadMesh(const std::string &meshName){
 	Shape::loadMesh(meshName);  
+}
+
+void Ship::initExhaust(const std::string RESOURCE_DIR){
+	// Make the left flame
+	flames.push_back(make_shared<ExhaustFire>(RESOURCE_DIR, LEFT));
+
+	// Make the right flame
+	flames.push_back(make_shared<ExhaustFire>(RESOURCE_DIR, RIGHT));
 }
 
 double timeHit = -1.0;
@@ -59,6 +70,30 @@ void Ship::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
 	if (currAnim == LEFT_ROLL || currAnim == RIGHT_ROLL){
 		MV->translate(generateEMatrix()[3]);
 	}
+}
+
+MatrixStack Ship::getModelMatrix(){
+	MatrixStack M;
+	M.pushMatrix();
+	// Translate so that the ship intersects with the ground:
+	M.translate(0.0f, -0.3f, 0.0f);
+	
+	// Scale the size of the ship:
+	M.scale(0.7f, 0.7f, 0.7f);
+
+	// Rotate the ship about the y axis (it will be facing the wrong direction otherwise)
+	M.rotate(M_PI, 0, 1, 0);
+	
+	M.translate(p_prev);
+	M.rotate(yaw, 0, 1, 0);
+	M.translate(p - p_prev);
+
+	// The code below is necessary for the camera to follow the ship when it rolls:
+	if (currAnim == LEFT_ROLL || currAnim == RIGHT_ROLL){
+		M.translate(generateEMatrix()[3]);
+	}
+
+	return M;
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
@@ -102,7 +137,6 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 		// At time tHit + INVINCIBLE_TIME / 2.0 -> red
 		// At time tHit + INVINCIBLE_TIME       -> white
 
-
 		float p = 2.0 * (tGlobal - timeHit) / (INVINCIBILITY_TIME);
 
 		if (p > 1.0f){
@@ -118,8 +152,32 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 
 	MV->popMatrix();
 
-	// Updating the previous position here causes
+	// Updating the previous position here causes issues
 	// p_prev = p;
+}
+
+void Ship::drawFlames(std::shared_ptr<MatrixStack> &P, std::shared_ptr<MatrixStack> &MV, int width, int height, 
+    std::shared_ptr<Texture> &alphaTex, std::shared_ptr<Program> &prog)
+{	
+	MatrixStack M = getModelMatrix();
+	glm::vec3 currPos = getPos();
+	MV->pushMatrix();
+	
+	M.pushMatrix();
+	flames[0]->setCenter(currPos);
+	flames[0]->setRoll(roll);
+	flames[0]->step(M, wPressed);
+	flames[0]->draw(P, MV, width, height, alphaTex, prog);
+	M.popMatrix();
+	
+	M.pushMatrix();
+	flames[1]->setCenter(currPos);
+	flames[1]->setRoll(roll);
+	flames[1]->step(M, wPressed);
+	flames[1]->draw(P, MV, width, height, alphaTex, prog);
+	M.popMatrix();
+
+	MV->popMatrix();
 }
 
 void Ship::updatePrevPos(){
@@ -139,6 +197,10 @@ glm::vec3 Ship::getPos(){
 
 glm::vec3 Ship::getVel(){ return this->v; }
 
+glm::vec3 Ship::getForwardDir(){
+	return glm::normalize(p - p_prev);
+}
+
 int Ship::getCurrAnim(){ return this->currAnim; };
 
 #define MAX_DIR_VEL 1.0f
@@ -151,7 +213,6 @@ void Ship::moveShip(bool keyPresses[256]){
 }
 
 void Ship::processKeys(bool keyPresses[256]){
-	bool wPressed, aPressed, dPressed, sPressed;
 
 	sPressed = wPressed = aPressed = dPressed = false;
 
@@ -472,4 +533,22 @@ void Ship::performSomersault()
 
 std::shared_ptr<BoundingSphere> Ship::getBoundingSphere(){
 	return std::make_shared<BoundingSphere>(1.0f, getPos());
+}
+
+void Ship::gameOver(std::string RESOURCE_DIR) { 
+	timeGameOver = tGlobal;
+	currAnim = GAME_OVER;
+	Eigen::Vector3f col(1.0f, 1.0f, 1.0f);
+	e = std::make_shared<Explosion>(RESOURCE_DIR, col);
+};
+
+void Ship::drawExplosion(std::shared_ptr<MatrixStack> &P, std::shared_ptr<MatrixStack> &MV, int width, int height, 
+	std::shared_ptr<Texture> &alphaTex, std::shared_ptr<Program> &prog)
+{
+	e->step();
+	MV->pushMatrix();
+	applyMVTransforms(MV);
+	if (!e->isAlive()){ exit(0); }
+	e->draw(P, MV, width, height, alphaTex, prog);
+	MV->popMatrix();
 }

@@ -11,7 +11,14 @@
 
 #include <Eigen/Dense>
 
+#define MIN_PARTICLE_SPEED 1.0f
+#define MAX_PARTICLE_SPEED 1.5f
+
+#define MIN_PARTICLE_LIFESPAN 1.0
+#define MAX_PARTICLE_LIFESPAN 2.0
+
 #define PARTICLE_LIFESPAN 1.0
+#define PARTICLE_DECELERATION 0.9f
 
 extern double tGlobal;
 
@@ -25,9 +32,24 @@ public:
 	
 	Particle(int index, GLuint colBufID, GLuint scaBufID, std::vector<float> &posBuf, std::vector<float> &colBuf, 
 		std::vector<float> &alpBuf, std::vector<float> &scaBuf, Eigen::Vector3f col);
+	
 	virtual ~Particle();
+	
 	void rebirth();
-	void step(float t, float h, const Eigen::Vector3f &g);
+	void rebirth(Eigen::Vector3f &basePos, Eigen::Vector3f &dirMin, Eigen::Vector3f &dirMax, float &speedMin, float &speedMax, float &lifespan);
+	
+	void step();
+	void step(Eigen::Vector3f &basePos, Eigen::Vector3f &dirMin, Eigen::Vector3f &dirMax, float &speedMin, float &speedMax, float &lifespan);
+
+	void setLifespan(float ls) { this->lifespan = ls; }
+	float getLifespan() { return this->lifespan; }
+	bool isAlive() { return this->tEnd > tGlobal; }
+	float percentageLived();
+	
+	Eigen::Vector3f getPos() { return Eigen::Vector3f(x[0], x[1], x[2]); }
+	Eigen::Vector3f getColor() { return Eigen::Vector3f(color[0], color[1], color[2]); }
+
+	void setColor(float r, float g, float b);
 	
 	static float randFloat(float l, float h);
 	
@@ -39,12 +61,15 @@ private:
 	// Properties that changes every rebirth
 	float m;        // mass
 	float d;        // viscous damping
-	float lifespan; // how long this particle lives
 	float tEnd;     // time this particle dies
+	float lifespan;
 	
 	// Properties that changes every frame
 	Eigen::Map<Eigen::Vector3f> x; // position (mapped to a location in posBuf)
-	Eigen::Vector3f v;             // velocity
+	// Eigen::Vector3f v;             // velocity
+	Eigen::Vector3f dir;             // direction
+	float speed; 
+
 	float &alpha;                  // mapped to a location in alpBuf
 };
 

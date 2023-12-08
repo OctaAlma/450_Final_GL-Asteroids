@@ -21,11 +21,8 @@ Particle::Particle(int index, GLuint colBufID, GLuint scaBufID, std::vector<floa
 {
 	// Random fixed properties
 	color = col;
-	scale = randFloat(5.0f, 8.0f);
-
-	tEnd = tGlobal + PARTICLE_LIFESPAN;
-
-	rebirth();
+	scale = randFloat(4e20f, 5e20f);
+	lifespan = randFloat(MIN_PARTICLE_LIFESPAN, MAX_PARTICLE_LIFESPAN);
 	
 	// Send color data to GPU
 	glBindBuffer(GL_ARRAY_BUFFER, colBufID);
@@ -40,35 +37,69 @@ Particle::~Particle()
 {
 }
 
+void Particle::setColor(float r, float g, float b) { 
+	color << std::min(r, 1.0f), std::min(g, 1.0f), std::min(b, 1.0f); 
+};
+
 void Particle::rebirth()
 {
 	m = 1.0f;
 	alpha = 1.0f;
+	tEnd = tGlobal + lifespan;
+	
+	d = randFloat(0.0f, 1.0f);
+	x << randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f);
+
+	speed = randFloat(MIN_PARTICLE_SPEED, MAX_PARTICLE_SPEED);
+	dir << randFloat(-1.0f, 1.0f), randFloat(-1.0f, 1.0f), randFloat(-1.0f, 1.0f);
+	dir.normalize();
+}
+
+void Particle::rebirth(Eigen::Vector3f &basePos, Eigen::Vector3f &dirMin, Eigen::Vector3f &dirMax, float &speedMin, float &speedMax, float &lifespan)
+{
+	m = 1.0f;
+	alpha = 1.0f;
+	tEnd = tGlobal + lifespan;
 	
 	// Gravity towards origin
 	d = randFloat(0.0f, 1.0f);
-	x << randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f);
-	v << randFloat(-1.0f, 1.0f), randFloat(-1.0f, 1.0f), randFloat(-1.0f, 1.0f);
+	x = basePos + Eigen::Vector3f(randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f));
 
-	tEnd = tGlobal + PARTICLE_LIFESPAN;
+	speed = randFloat(speedMin, speedMax);
+	dir << randFloat(dirMin.x(), dirMax.x()), randFloat(dirMin.y(), dirMax.y()), randFloat(dirMin.z(), dirMax.z());
+	dir.normalize();
 }
 
-void Particle::step(float t, float h, const Vector3f &g)
+
+void Particle::step()
+{
+	if (tGlobal > tEnd){
+		rebirth();	
+	}
+
+	// Update alpha based on current time
+	alpha = (tEnd - tGlobal)/lifespan;
+
+	speed *= PARTICLE_DECELERATION;
+	x += speed * dir;
+}
+
+void Particle::step(Eigen::Vector3f &basePos, Eigen::Vector3f &dirMin, Eigen::Vector3f &dirMax, float &speedMin, float &speedMax, float &lifespan)
 {
 	// Update alpha based on current time
-	alpha = (tEnd-t)/PARTICLE_LIFESPAN;
-	
-	//
-	// <IMPLEMENT ME>
-	// Accumulate forces and update velocity
-	//
-	
-	// Update position
-	x += h*v;
+	alpha = (tEnd - tGlobal)/lifespan;
+
+	speed *= PARTICLE_DECELERATION;
+	x += speed * dir;
 }
 
 float Particle::randFloat(float l, float h)
 {
 	float r = rand() / (float)RAND_MAX;
 	return (1.0f - r) * l + r * h;
+}
+
+float Particle::percentageLived(){
+	float per = ((float)(tEnd - tGlobal) / lifespan);
+	return std::max(per, 0.0f);
 }

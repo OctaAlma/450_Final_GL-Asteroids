@@ -29,9 +29,9 @@ bool thirdPersonCam = true;
 bool drawBoundingBox = true;
 bool drawGrid = true;
 bool drawAxisFrame = true;
-
+bool debug = false;
 bool pause = false;
-int numLives = 5;
+int numLives = 3;
 
 GLFWwindow *window; // Main application window
 string RESOURCE_DIR = ""; // Where the resources are loaded from
@@ -222,6 +222,7 @@ static void init()
 	
 	ship = make_shared<Ship>();
 	ship->loadMesh(RESOURCE_DIR + "ship.obj");
+	ship->initExhaust(RESOURCE_DIR);
 	ship->init();
 
 	// Initialize the bounding sphere model
@@ -309,7 +310,10 @@ void checkBeamCollisions(){
 			auto bs = a->getBoundingSphere();
 
 			if (bs->collided(start, end)){
-				std::cout << "Beam " << i << " collided with asteroid " << j << endl; 
+				if (debug){
+					std::cout << "Beam " << i << " collided with asteroid " << j << endl; 
+				}
+
 				beams.at(i)->setDead();
 
 				// Create an explosion at the asteroid's center
@@ -351,17 +355,20 @@ void render()
 	int collision = checkShipCollisions();
 
 	if (collision != -1){
-		// Do something when a collision is detected...
-		cout << "Ship collided with asteroid " << collision << " at time " << t << endl;
-		numLives--;
-
-		if (numLives < 0){
-			// DO SOMETHING FOR GAME OVER
+		if (debug){
+			cout << "Ship collided with asteroid " << collision << " at time " << t << endl;
 		}
 
-		// Start invincibility
-		ship->setInvincible();
+		numLives--;
 
+		if (numLives < 0 && ship->getCurrAnim() != GAME_OVER){
+			// Begin ship explosion animation
+			ship->gameOver(RESOURCE_DIR);
+		}
+		else{
+			// Start invincibility
+			ship->setInvincible();
+		}
 	}
 
 	checkBeamCollisions();
@@ -425,7 +432,9 @@ void render()
 	}
 
 	// Draw the ship
-	ship->drawShip(prog, MV);
+	if (ship->getCurrAnim() != GAME_OVER){
+		ship->drawShip(prog, MV);
+	}
 
 	if (drawBoundingBox){
 		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
@@ -455,6 +464,8 @@ void render()
 	prog->unbind();
 
 	// Draw any explosions
+	pProg->bind();
+
 	for (int i = 0; i < explosions.size(); i++){
 
 		if (!explosions.at(i)->isAlive()){
@@ -466,6 +477,14 @@ void render()
 		explosions.at(i)->step();
 		explosions.at(i)->draw(P, MV, width, height, alphaTex, pProg);
 	}
+
+	if (ship->getCurrAnim() == GAME_OVER){
+		ship->drawExplosion(P, MV, width, height, alphaTex, pProg);
+	}
+
+	ship->drawFlames(P, MV, width, height, alphaTex, pProg);
+
+	pProg->unbind();
 	
 	// Draw the frame and the grid with OpenGL 1.x (no GLSL)
 	

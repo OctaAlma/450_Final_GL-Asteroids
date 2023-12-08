@@ -36,10 +36,8 @@ Explosion::Explosion(std::string RESOURCE_DIR, Eigen::Vector3f col){
 	// Send scale buffer to GPU
 	glBindBuffer(GL_ARRAY_BUFFER, scaBufID);
 	glBufferData(GL_ARRAY_BUFFER, scaBuf.size()*sizeof(float), &scaBuf[0], GL_STATIC_DRAW);
-	
-	assert(glGetError() == GL_NO_ERROR);
 
-    for(int i = 0; i < NUM_PARTICLES_PER_EXPLOSION; ++i) {
+	for(int i = 0; i < NUM_PARTICLES_PER_EXPLOSION; ++i) {
 		auto p = std::make_shared<Particle>(i, colBufID, scaBufID, posBuf, colBuf, alpBuf, scaBuf, col);
 		particles.push_back(p);
  		p->rebirth();
@@ -51,14 +49,9 @@ void Explosion::setCenter(glm::vec3 c){
 }
 
 void Explosion::step(){
-    // TO-DO: What do the particles do as time progresses?
-	float h = 1.0f;
-	Eigen::Vector3f grav;
-	grav << 0.0f, 9.81f, 0.0f;
 
-    // This can be parallelized!
     for(int i = 0; i < (int)particles.size(); ++i) {
-        particles[i]->step(tGlobal, h, grav);
+        particles[i]->step();
     }
 }
 
@@ -70,7 +63,6 @@ void Explosion::draw(std::shared_ptr<MatrixStack> &P,
 	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	prog->bind();
 	alphaTex->bind(prog->getUniform("alphaTexture"));
 
     MV->pushMatrix();
@@ -84,7 +76,6 @@ void Explosion::draw(std::shared_ptr<MatrixStack> &P,
     MV->popMatrix();
 
 	alphaTex->unbind();
-	prog->unbind();
 	
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
