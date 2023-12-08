@@ -170,14 +170,8 @@ void Ship::updatePrevPos(){
 }
 
 glm::vec3 Ship::getPos(){
-	auto MV = make_shared<MatrixStack>();
-	MV->pushMatrix();
-	MV->rotate(M_PI, 0, 1, 0);
-	MV->scale(0.7f, 0.7f, 0.7f);
-	MV->translate(p_prev);
-	MV->rotate(yaw, 0, 1, 0);
-	MV->translate(p - p_prev);
-	return MV->topMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); 
+	auto M = getModelMatrix();
+	return M.topMatrix() * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f); 
 }
 
 glm::vec3 Ship::getVel(){ return this->v; }
@@ -517,7 +511,7 @@ void Ship::performSomersault()
 }
 
 std::shared_ptr<BoundingSphere> Ship::getBoundingSphere(){
-	return std::make_shared<BoundingSphere>(1.0f, getPos());
+	return std::make_shared<BoundingSphere>(1.5f, getPos());
 }
 
 void Ship::gameOver(std::string RESOURCE_DIR) { 

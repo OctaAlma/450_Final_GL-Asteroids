@@ -122,12 +122,16 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 		shootBeam = true;
 	}
 
-	if ((key == 'P' || key == 'p') && (action == GLFW_PRESS)){
+	else if ((key == 'P' || key == 'p') && (action == GLFW_PRESS)){
 		pause = !pause;
 	}
 
-	if ((key == 'V' || key == 'v') && (action == GLFW_PRESS)){
+	else if ((key == 'V' || key == 'v') && (action == GLFW_PRESS)){
 		camType = (camType + 1) % 3;
+	}
+
+	else if ((key == 'B' || key == 'b') && (action == GLFW_PRESS)){
+		drawBoundingBox = !drawBoundingBox;
 	}
 }
 
