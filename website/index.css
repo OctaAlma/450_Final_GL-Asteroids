@@ -38,6 +38,13 @@
     max-width: 100%;
 }
 
+code{
+    font-size: 120%;
+    color: whitesmoke;
+    background-color: black;
+    border-radius: 5px;
+}
+
 body{
     background-color: #121212;
     /* background-image: url('./space.png'); */
@@ -85,8 +92,8 @@ a{
 }
 
 ul li{
-    padding-top: 1%;
-    padding-bottom: 1%;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 table{

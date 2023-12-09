@@ -38,7 +38,7 @@ void Asteroid::setColor(glm::vec3 color){ this->color = color; }
 
 void Asteroid::applyMVTransforms(std::shared_ptr<MatrixStack> &MV){
     MV->translate(this->pos);
-    MV->translate(0.0f, 0.0f, -5.0f * size / (MAX_ASTEROID_SIZE - MIN_ASTEROID_SIZE));
+    MV->translate(0.0f, 0.0f, -7.0f * size / (MAX_ASTEROID_SIZE - MIN_ASTEROID_SIZE));
     MV->scale(size, size, size);
 }
 

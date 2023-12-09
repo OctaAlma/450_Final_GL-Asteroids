@@ -24,7 +24,10 @@ CSCE 450H: Computer Animation Fall 2023
 
             <ul>
                 <li class="desc"><b>Dynamic Keyframes • </b> 
-                    This project involves the implementation of dynamic keyframing, which vary depending on factors such as the position and velocity of the ship at the moment the keyframed animation is triggered. These factors will affect the time it takes to complete the animation, as well as the position of the ship once the animation is finished.
+                    This core goal of the project was to implement dynamic keyframing. 
+                    In assignment 1, we implemented keyframes that were set at compile time. 
+                    The position of these keyframes depend on factors such as the position and velocity of the ship at the moment the animation was triggered. 
+                    These factors will affect the time it takes to complete the animation, as well as the position of the ship once the animation is finished.
                 </li>
             </ul>
                 
@@ -35,17 +38,26 @@ CSCE 450H: Computer Animation Fall 2023
             
             <ul>
                 <li class="desc"><b>Particle Effects • </b>
-                    We can view random particles generated whenever the ship is accelerating in the forward direction. Once the ship reaches its highest speed, the particle colors will shift towards a blueish hue.
+                    I also decided to implement a particle system to better convey the actions and events of the game. 
+                    Particles are generated whenever the ship accelerates in the forward direction. 
+                    As the particle approaches the end of its lifespan, its color transitions from a deep red to a light yellow.
                     <br><br>
-                    Particles are also created whenever the asteroids are destroyed. The number of particles varies depending on this size of the asteroid that was destroyed, with bigger asteroids creating more particles.
+                    Particles are also created whenever the asteroids are destroyed. An "explosion" can be seen following the collision of a beam and an asteroid.
+                    If the ship collides with an asteroid and it has no more lives left, the ship will explode as well.
+                    <br><br>
+                    My explosion system was adapted from the <code>Particle</code> class provided for <a href="https://people.engr.tamu.edu/sueda/courses/CSCE450/2023F/labs/L06/index.html">Lab 6</a>, which uses <code>GL_POINTS</code> drawn as "billboarded" quads.
                 </li>
                 
                 <li class="desc"><b>Collision Detection • </b>
-                    Collision detection is managed through bounding spheres for both the asteroids and the spaceship. When initialized, each asteroid has a predetermined radius that is used to calculate the size of its hitbox. Continuous sphere-to-sphere collisions are performed for the spaceship and all of the asteroids. Laser beams are represented internally by line segments, and line intersections are performed to check if they collide with any asteroids while they are "active".  
-                    <br><br>    
-                    Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
+                    Collisions are managed through bounding spheres for both the asteroids and the spaceship. 
+                    When initialized, each asteroid has a predetermined radius that is used to calculate the size of its hitbox. 
+                    Continuous sphere-to-sphere collisions are performed for the spaceship and all of the asteroids. 
+                    Laser beams are represented internally by line segments, and line intersections are performed to check if they collide with any asteroids while they are "active".  
                     <br><br>
-                    Lasers are represented by line segments. A special collision detection is used to determine whether or not the line segment intersects the hitboxes of the asteroids.
+                    <div class="screenshot">
+                        <img src="./BoundingBoxes.png">
+                    </div>    
+                    Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
                 </li>
             </ul>
         </div>
@@ -59,15 +71,24 @@ CSCE 450H: Computer Animation Fall 2023
                 <li class="desc">The <b>WASD</b> keys can be used to move the ship around the map.</li>
                 <li class="desc">The <b>Q</b> and <b>E</b> keys trigger left and right barrel-rolls, respectively.</li>
                 <li class="desc">The <b>SPACEBAR</b> key triggers a somersault.</li>
-                <li class="desc">Finally, the <b>F</b> key can be used to fire a plasma beam. Use this to destroy the asteroids!</li>
+                <li class="desc">The <b>J</b> key can be used to fire a plasma beam. Use this to destroy the asteroids!</li>
+                <li class="desc">The <b>V</b> key can be used to switch between camera views.</li>
+                <li class="desc">The <b>P</b> key can be used to pause the game.</li>
+                <li class="desc">The <b>B</b> key can be used to toggle bounding spheres.</li>
             </ul>
         </div>
 
         <div class="line"></div>
 
         <div class="content">
-            <h4 class="title">DEVELOPMENT CHALLENGES</h4>
-            <p class="desc"></p>
+            <h4 class="title">RESOURCES</h4>
+            
+            <ul>
+                <li class="desc">Spaceship model was obtained from <a href="https://sketchfab.com/3d-models/low-poly-space-ship-587941c9c11742c6b82dfb99e7b210b9">Sketchfab</a>.</li>
+                <li class="desc">Asteroid model was obtained from <a href="https://free3d.com/3d-model/-asteroid--962525.html">Free3D</a>.</li>
+                <li class="desc">Line-segment-sphere collision detection code was based off of a guide from <a href="https://www.baeldung.com/cs/circle-line-segment-collision-detection">Baelung</a>.</li>
+                <li class="desc">Random float generation was obtained from <a href="https://stackoverflow.com/questions/5289613/generate-random-float-between-two-floats">this</a> Stack Overflow post.</li>
+            </ul>
         </div>
 
         <div class="line"></div>

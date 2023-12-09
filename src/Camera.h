@@ -27,6 +27,8 @@ public:
 	void setScaleFactor(float f) { sfactor = f; };
 	void mouseClicked(float x, float y, bool shift, bool ctrl, bool alt);
 	void mouseMoved(float x, float y);
+	void increaseFOV();
+	void decreaseFOV();
 	void applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const;
 	void applyFPSProjectionMatrix(std::shared_ptr<MatrixStack> P) const;
 	void applyOrthogonalMatrix(std::shared_ptr<MatrixStack> P) const;

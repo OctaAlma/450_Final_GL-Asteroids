@@ -35,7 +35,7 @@ int camType = THIRD_PERSON;
 float camDist = 25.0f;
 bool drawBoundingBox = false;
 bool drawGrid = true;
-bool drawAxisFrame = true;
+bool drawAxisFrame = false;
 bool debug = false;
 bool pause = false;
 int numLives = 3;
@@ -133,6 +133,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 	else if ((key == 'B' || key == 'b') && (action == GLFW_PRESS)){
 		drawBoundingBox = !drawBoundingBox;
+	}
+
+	else if ((key == 'X' || key == 'x') && (action == GLFW_PRESS)){
+		drawAxisFrame = !drawAxisFrame;
 	}
 }
 
@@ -446,6 +450,10 @@ void render()
 	// Draw HUD before applying projection matrix
 	drawHUD(P, MV, t);
 
+	// Modify the camera's FOV:
+	if (isPressed['F']){ camera->increaseFOV(); }
+	if (isPressed['G']){ camera->decreaseFOV(); }
+
 	if (camType == TOP_DOWN){ 
 		P->scale(0.4f, 0.4f, 0.4f);
 		camera->applyOrthogonalMatrix(P); 	
@@ -490,6 +498,7 @@ void render()
 	}
 
 	// Draw the ship
+	ship->boundShip();
 	if (ship->getCurrAnim() != GAME_OVER && camType != FIRST_PERSON){
 		ship->drawShip(prog, MV);
 	}
@@ -623,7 +632,7 @@ void render()
 	
 	// Draw grid
 	if (drawGrid){
-		float gridSizeHalf = 100.0f;
+		float gridSizeHalf = 115.0f;
 		float gridOffset = -5.0f;
 		int gridNx = 20;
 		int gridNz = 20;
@@ -690,7 +699,7 @@ void processInputs(int argc, char **argv){
 			numLives = std::stoi(argv[i]);
 		}
 		else if (opt == "-b"){ drawBoundingBox = true; }
-		else if (opt == "-f"){ drawAxisFrame = true; }
+		else if (opt == "-x"){ drawAxisFrame = true; }
 		else if (opt == "-g"){ drawGrid = true; }
 		else if (opt == "-t"){ camType = TOP_DOWN; }
 		else if (opt == "-fp"){ camType = FIRST_PERSON; }
@@ -702,11 +711,9 @@ int main(int argc, char **argv)
 	if(argc < 2) {
 		cout << "Usage: ./Final [RESOURCE_DIR]\n";
 		cout << "Options: -a X   - Sets the number of asteroids to X\n";
-		// cout << "         -v X   - Sets the maximum asteroid velocity to X\n";
-		// cout << "         -s X   - Sets the maximum asteroid size to X\n";
 		cout << "         -l X   - Sets the number of lives to X\n";
 		cout << "         -b     - Turns on bounding boxes around objects\n";
-		cout << "         -f     - Turns on the axis frame\n";
+		cout << "         -x     - Turns on the axis frame\n";
 		cout << "         -g     - Turns on the grid\n";
 		cout << "         -t     - Defaults to top-down cam\n";
 		cout << "         -fp    - Defaults to first-person cam\n";

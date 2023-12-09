@@ -92,3 +92,15 @@ void Camera::applyTopDownViewMatrix(std::shared_ptr<MatrixStack> MV) const
 	MV->rotate(M_PI_2, glm::vec3(1.0f, 0.0f, 0.0f));
 	MV->translate(0.0f, -220.0f, 0.0f);
 }
+
+#define FOV_MAX 1.570796f
+#define FOV_MIN 0.785398f / 2.0f
+
+#define FOV_INCREMENT 0.01f
+void Camera::increaseFOV(){
+	fovy = std::min(FOV_MAX, fovy + FOV_INCREMENT);
+}
+
+void Camera::decreaseFOV(){
+	fovy = std::max(FOV_MIN, fovy - FOV_INCREMENT);
+}

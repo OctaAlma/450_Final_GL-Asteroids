@@ -100,8 +100,7 @@ glm::vec3 Ship::getCol(){
 }
 
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
-	boundShip();
-
+	
 	if ((tGlobal - tStart) * (2.0f + abs(v[2])) > (tEnd - tStart) && currAnim != NONE){
 		
 		// The code below updates the ship's position to be its position after performing the roll
