@@ -81,6 +81,24 @@ MatrixStack Ship::getModelMatrix(){
 	return M;
 }
 
+glm::vec3 Ship::getCol(){
+	if (this->isInvincible()){
+		// At time tHit                         -> white
+		// At time tHit + INVINCIBLE_TIME / 2.0 -> red
+		// At time tHit + INVINCIBLE_TIME       -> white
+
+		float p = 2.0 * (tGlobal - timeHit) / (INVINCIBILITY_TIME);
+
+		if (p > 1.0f){
+			p = 2.0 - p;
+		}
+		
+		return glm::vec3(1.0f, 1.0f - p, 1.0f - p);
+	}
+
+	return glm::vec3(1.0f, 1.0f, 1.0f);
+}
+
 void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixStack> &MV){
 	boundShip();
 
@@ -117,23 +135,10 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	}
 
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
-
-	if (this->isInvincible()){
-		// At time tHit                         -> white
-		// At time tHit + INVINCIBLE_TIME / 2.0 -> red
-		// At time tHit + INVINCIBLE_TIME       -> white
-
-		float p = 2.0 * (tGlobal - timeHit) / (INVINCIBILITY_TIME);
-
-		if (p > 1.0f){
-			p = 2.0 - p;
-		}
-		
-		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f - p, 1.0f - p);
-	}else{
-		glUniform3f(prog->getUniform("kd"), 1.0f, 1.0f, 1.0f);
-	}
-
+	
+	glm::vec3 col = getCol();
+	glUniform3f(prog->getUniform("kd"), col.r, col.g, col.b);
+	
 	this->draw(prog);
 
 	MV->popMatrix();
@@ -205,7 +210,7 @@ glm::vec3 Ship::getForwardDir(){
 
 int Ship::getCurrAnim(){ return this->currAnim; };
 
-#define MAX_DIR_VEL 1.0f
+#define MAX_DIR_VEL 0.65f
 #define MAX_ROLL M_PI_4
 
 void Ship::moveShip(bool keyPresses[256]){
@@ -280,9 +285,9 @@ void Ship::processKeys(bool keyPresses[256]){
 	if (!aPressed && !dPressed){
 		if (roll != 0.0f){
 			if (roll < 0.0f){
-				roll += 0.05f;
+				roll += 0.03f;
 			}else{
-				roll -= 0.05f;
+				roll -= 0.03f;
 			}
 
 			if (abs(roll - 0.02f) <= 0.1f){

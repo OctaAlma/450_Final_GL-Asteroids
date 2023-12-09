@@ -21,6 +21,8 @@ Particle::Particle(int index, GLuint colBufID, GLuint scaBufID, std::vector<floa
 {
 	// Random fixed properties
 	color = col;
+	alpha = 1.0f;
+	// scale = 5.0f;
 	scale = randFloat(MIN_PARTICLE_SIZE, MAX_PARTICLE_SIZE);
 	lifespan = randFloat(MIN_PARTICLE_LIFESPAN, MAX_PARTICLE_LIFESPAN);
 	

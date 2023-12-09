@@ -3,6 +3,13 @@
 #include <iostream>
 using std::cout, std::endl;
 
+void printVec(std::vector<float> v){
+	for (int i = 0; i < v.size(); i++){
+		cout << v.at(i) << ",";
+	}
+	cout << endl << endl;
+}
+
 Explosion::Explosion(std::string RESOURCE_DIR, Eigen::Vector3f col){
     posBuf.resize(3 * NUM_PARTICLES_PER_EXPLOSION);
 	colBuf.resize(3 * NUM_PARTICLES_PER_EXPLOSION);
@@ -28,7 +35,7 @@ Explosion::Explosion(std::string RESOURCE_DIR, Eigen::Vector3f col){
 	colBufID = bufs[1];
 	alpBufID = bufs[2];
 	scaBufID = bufs[3];
-	
+
 	// Send color buffer to GPU
 	glBindBuffer(GL_ARRAY_BUFFER, colBufID);
 	glBufferData(GL_ARRAY_BUFFER, colBuf.size()*sizeof(float), &colBuf[0], GL_STATIC_DRAW);
@@ -67,7 +74,6 @@ void Explosion::draw(std::shared_ptr<MatrixStack> &P,
 
     MV->pushMatrix();
     MV->translate(center);
-	MV->scale(2.0f, 2.0f, 2.0f);
 	
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
 	glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));

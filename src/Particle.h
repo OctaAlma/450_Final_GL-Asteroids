@@ -20,8 +20,8 @@
 #define PARTICLE_LIFESPAN 1.0
 #define PARTICLE_DECELERATION 0.9f
 
-#define MIN_PARTICLE_SIZE 1e25f
-#define MAX_PARTICLE_SIZE 1e30f
+#define MIN_PARTICLE_SIZE 3.0f
+#define MAX_PARTICLE_SIZE 5.0f
 
 extern double tGlobal;
 

@@ -32,6 +32,7 @@ enum CAMERA_TYPES{
 };
 
 int camType = THIRD_PERSON;
+float camDist = 25.0f;
 bool drawBoundingBox = false;
 bool drawGrid = true;
 bool drawAxisFrame = true;
@@ -46,7 +47,7 @@ int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[512] = {0};
 double score = 0.0;
 double tGlobal = 0.0;
-int NUM_ASTEROIDS = 25;
+int NUM_ASTEROIDS = 18;
 
 
 shared_ptr<Program> prog;
@@ -175,6 +176,9 @@ void drawHUD(shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV, double tim
 	float rot = -M_PI + time * 1.5f;
 	// Draw the spaceship's lives
 	for (int i = 0; i < numLives; i++){
+		glm::vec3 col = ship->getCol();
+		glUniform3f(prog->getUniform("kd"), col.r, col.g, col.b);
+
 		MV->pushMatrix();
 		glm::vec3 t(-45.0f + 5.5f * i, 42.5f, -3.0f);
 		MV->translate(t);
@@ -184,6 +188,15 @@ void drawHUD(shared_ptr<MatrixStack> &P, shared_ptr<MatrixStack> &MV, double tim
 		glUniform3f(prog->getUniform("lightPos"), t.x, t.y, t.z + 5.0);
 		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
 		ship->draw(prog);
+		MV->popMatrix();
+	}
+
+	if (camType == FIRST_PERSON){
+		MV->pushMatrix();
+		glUniform3f(prog->getUniform("kd"), 1.0f, 0.0f, 0.0f);
+		glUniform3f(prog->getUniform("lightPos"), 0.0f, 0.0f, 20.0f);
+		glUniformMatrix4fv(prog->getUniform("MV"), 1, GL_FALSE, glm::value_ptr(MV->topMatrix()));
+		frustum->draw(prog);
 		MV->popMatrix();
 	}
 
@@ -235,7 +248,7 @@ static void init()
 	pProg->setVerbose(false);
 	
 	camera = make_shared<Camera>();
-	camera->setInitDistance(25.0f);
+	camera->setInitDistance(camDist);
 	
 	ship = make_shared<Ship>();
 	ship->loadMesh(RESOURCE_DIR + "ship.obj");
@@ -437,31 +450,33 @@ void render()
 		P->scale(0.4f, 0.4f, 0.4f);
 		camera->applyOrthogonalMatrix(P); 	
 	}
+	else if (camType == FIRST_PERSON){
+		camera->applyFPSProjectionMatrix(P);
+	}
 	else { 	
 		camera->applyProjectionMatrix(P); 
 	}
 
 	MV->pushMatrix();
 	auto E = make_shared<MatrixStack>();
-	switch (camType)
-	{
-	case THIRD_PERSON:
-		camera->applyViewMatrix(MV);
-		ship->applyMVTransforms(E);
-		MV->rotate(M_PI, 0,1,0);
-		MV->multMatrix(glm::inverse(E->topMatrix()));
-		break;
-	case TOP_DOWN:
-		camera->applyTopDownViewMatrix(MV);
-		break;
-	case FIRST_PERSON:
-		camera->applyFPSViewMatrix(MV);
-		ship->applyMVTransforms(E);
-		MV->rotate(M_PI, 0,1,0);
-		MV->multMatrix(glm::inverse(E->topMatrix()));
-		break;
-	default:
-		break;
+	switch (camType){
+		case THIRD_PERSON:
+			camera->applyViewMatrix(MV);
+			ship->applyMVTransforms(E);
+			MV->rotate(M_PI, 0,1,0);
+			MV->multMatrix(glm::inverse(E->topMatrix()));
+			break;
+		case TOP_DOWN:
+			camera->applyTopDownViewMatrix(MV);
+			break;
+		case FIRST_PERSON:
+			camera->applyFPSViewMatrix(MV);
+			ship->applyMVTransforms(E);
+			MV->rotate(M_PI, 0,1,0);
+			MV->multMatrix(glm::inverse(E->topMatrix()));
+			break;
+		default:
+			break;
 	}
 
 	glUniformMatrix4fv(prog->getUniform("P"), 1, GL_FALSE, glm::value_ptr(P->topMatrix()));
@@ -475,7 +490,7 @@ void render()
 	}
 
 	// Draw the ship
-	if (ship->getCurrAnim() != GAME_OVER){
+	if (ship->getCurrAnim() != GAME_OVER && camType != FIRST_PERSON){
 		ship->drawShip(prog, MV);
 	}
 
@@ -484,7 +499,6 @@ void render()
 
 		// Draw the ship's bounding sphere:
 		MV->pushMatrix();
-		
 		auto bs = ship->getBoundingSphere();
 		MV->translate(bs->center);
 		MV->scale(bs->radius);
@@ -508,6 +522,8 @@ void render()
 
 	// Draw any explosions
 	pProg->bind();
+
+	glfwGetWindowSize(window, &width, &height);
 
 	for (int i = 0; i < explosions.size(); i++){
 
@@ -692,8 +708,8 @@ int main(int argc, char **argv)
 		cout << "         -b     - Turns on bounding boxes around objects\n";
 		cout << "         -f     - Turns on the axis frame\n";
 		cout << "         -g     - Turns on the grid\n";
-		cout << "         -t     - Turns on top-down cam\n";
-		cout << "         -fp    - Turns on first-person cam\n";
+		cout << "         -t     - Defaults to top-down cam\n";
+		cout << "         -fp    - Defaults to first-person cam\n";
 
 		return 0;
 	}

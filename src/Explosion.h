@@ -17,7 +17,7 @@
 #include <memory>
 #include <vector>
 
-#define NUM_PARTICLES_PER_EXPLOSION 1000
+#define NUM_PARTICLES_PER_EXPLOSION 500
 #define EXPLOSION_LIFESPAN 1.0 // In seconds
 
 extern double tGlobal;

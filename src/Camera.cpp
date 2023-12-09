@@ -58,6 +58,12 @@ void Camera::mouseMoved(float x, float y)
 void Camera::applyProjectionMatrix(std::shared_ptr<MatrixStack> P) const
 {
 	// Modify provided MatrixStack
+	P->multMatrix(glm::perspective(fovy, aspect, 0.05f, zfar));
+}
+
+void Camera::applyFPSProjectionMatrix(std::shared_ptr<MatrixStack> P) const
+{
+	// Modify provided MatrixStack
 	P->multMatrix(glm::perspective(fovy, aspect, znear, zfar));
 }
 
@@ -76,7 +82,7 @@ void Camera::applyViewMatrix(std::shared_ptr<MatrixStack> MV) const
 
 void Camera::applyFPSViewMatrix(std::shared_ptr<MatrixStack> MV) const
 {
-	MV->translate(0.0f, -1.0f, 2.0f);
+	MV->translate(0.0f, -1.0f, 0.0f);
 	MV->rotate(rotations.y, glm::vec3(1.0f, 0.0f, 0.0f));
 	MV->rotate(rotations.x, glm::vec3(0.0f, 1.0f, 0.0f));	
 }

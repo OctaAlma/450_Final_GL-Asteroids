@@ -48,6 +48,7 @@ class Ship: public Shape
         
         glm::vec3 getPos();
         glm::vec3 getVel();
+        glm::vec3 getCol();
         glm::vec3 getForwardDir();
         float getRoll() { return this->roll; }
         float getYaw() { return this->yaw; }

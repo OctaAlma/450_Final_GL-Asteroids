@@ -8,12 +8,12 @@ using std::cout, std::endl;
 #define EXHAUST_Z_OFFSET -0.8f
 #define NUM_EXHAUST_PARTICLES 10000
 
-glm::vec4 worldDirMin(-0.2f, -0.3f, -0.5f, 1.0f);
-glm::vec4 worldDirMax(0.2f, 0.3f, -1.0f, 1.0f);
+glm::vec4 worldDirMin(-0.4f, -0.4f, -0.5f, 0.0f);
+glm::vec4 worldDirMax(0.4f, 0.4f, -1.0f, 0.0f);
 float speedMin = 0.1f;
 float speedMax = 0.2f;
-float minls = 0.1f;
-float maxls = 0.2f;
+float minls = 0.3f;
+float maxls = 0.7f;
 
 ExhaustFire::ExhaustFire(const std::string RESOURCE_DIR, int e)
 {
@@ -72,13 +72,6 @@ ExhaustFire::ExhaustFire(const std::string RESOURCE_DIR, int e)
 	// Send scale buffer to GPU
 	glBindBuffer(GL_ARRAY_BUFFER, scaBufID);
 	glBufferData(GL_ARRAY_BUFFER, scaBuf.size()*sizeof(float), &scaBuf[0], GL_STATIC_DRAW);
-}
-
-void printVec(std::vector<float> v){
-	for (int i = 0; i < v.size(); i++){
-		cout << v.at(i) << ",";
-	}
-	cout << endl << endl;
 }
 
 float angleBetweenVecs(glm::vec3 v1, glm::vec3 v2)
