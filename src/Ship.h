@@ -14,6 +14,8 @@
 
 #define UNIT 20.0f
 #define INVINCIBILITY_TIME 1.0 // The number of seconds the ship is invincible after a collision
+#define MAX_DIR_VEL 0.8f
+#define MAX_ROLL M_PI_4
 
 extern double tGlobal;
 extern double score;

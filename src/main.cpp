@@ -47,7 +47,7 @@ int keyPresses[256] = {0}; // only for English keyboards!
 bool isPressed[512] = {0};
 double score = 0.0;
 double tGlobal = 0.0;
-int NUM_ASTEROIDS = 18;
+int NUM_ASTEROIDS = 22;
 
 
 shared_ptr<Program> prog;
@@ -451,8 +451,8 @@ void render()
 	drawHUD(P, MV, t);
 
 	// Modify the camera's FOV:
-	if (isPressed['F']){ camera->increaseFOV(); }
-	if (isPressed['G']){ camera->decreaseFOV(); }
+	if (isPressed[GLFW_KEY_F]){ camera->increaseFOV(); }
+	if (isPressed[GLFW_KEY_G]){ camera->decreaseFOV(); }
 
 	if (camType == TOP_DOWN){ 
 		P->scale(0.4f, 0.4f, 0.4f);

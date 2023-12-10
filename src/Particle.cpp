@@ -51,7 +51,7 @@ void Particle::rebirth()
 	
 	d = randFloat(0.0f, 1.0f);
 	x << randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f), randFloat(-0.1f, 0.1f);
-
+	lifespan = randFloat(MIN_PARTICLE_LIFESPAN, MAX_PARTICLE_LIFESPAN);
 	speed = randFloat(MIN_PARTICLE_SPEED, MAX_PARTICLE_SPEED);
 	dir << randFloat(-1.0f, 1.0f), randFloat(-1.0f, 1.0f), randFloat(-1.0f, 1.0f);
 	dir.normalize();

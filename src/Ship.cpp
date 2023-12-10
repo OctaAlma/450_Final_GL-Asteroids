@@ -209,9 +209,6 @@ glm::vec3 Ship::getForwardDir(){
 
 int Ship::getCurrAnim(){ return this->currAnim; };
 
-#define MAX_DIR_VEL 0.65f
-#define MAX_ROLL M_PI_4
-
 void Ship::moveShip(bool keyPresses[256]){
 	processKeys(keyPresses);
 	glm::mat4 R = glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0));
@@ -260,7 +257,7 @@ void Ship::processKeys(bool keyPresses[256]){
 
 	if ((currAnim == NONE) && (keyPresses[(int)'d'] || keyPresses[(int)'D'])){
 		aPressed = true;
-		this->roll -= 0.05f;
+		this->roll -= 0.075f;
 
 		if (roll < -MAX_ROLL){
 			roll = -MAX_ROLL;
@@ -271,7 +268,7 @@ void Ship::processKeys(bool keyPresses[256]){
 
 	if ((currAnim == NONE) && (keyPresses[(int)'a'] || keyPresses[(int)'A'])){
 		dPressed = true;
-		this->roll += 0.05f;
+		this->roll += 0.075f;
 
 		if (roll > MAX_ROLL){
 			roll = MAX_ROLL;
@@ -284,9 +281,9 @@ void Ship::processKeys(bool keyPresses[256]){
 	if (!aPressed && !dPressed){
 		if (roll != 0.0f){
 			if (roll < 0.0f){
-				roll += 0.03f;
+				roll += 0.05f;
 			}else{
-				roll -= 0.03f;
+				roll -= 0.05f;
 			}
 
 			if (abs(roll - 0.02f) <= 0.1f){
