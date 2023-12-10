@@ -465,6 +465,8 @@ void render()
 		camera->applyProjectionMatrix(P); 
 	}
 
+	int currShipAnim = ship->getCurrAnim();
+
 	MV->pushMatrix();
 	auto E = make_shared<MatrixStack>();
 	switch (camType){
@@ -478,6 +480,13 @@ void render()
 			camera->applyTopDownViewMatrix(MV);
 			break;
 		case FIRST_PERSON:
+			if (currShipAnim != NONE && currShipAnim != GAME_OVER){
+				glm::mat4 Eship = ship->generateEMatrix();
+				if (currShipAnim == LEFT_ROLL || currShipAnim == RIGHT_ROLL){
+					MV->translate(-1.0f * Eship[3]);
+				}
+				MV->multMatrix(Eship);
+			}
 			camera->applyFPSViewMatrix(MV);
 			ship->applyMVTransforms(E);
 			MV->rotate(M_PI, 0,1,0);
@@ -499,7 +508,7 @@ void render()
 
 	// Draw the ship
 	ship->boundShip();
-	if (ship->getCurrAnim() != GAME_OVER && camType != FIRST_PERSON){
+	if (ship->getCurrAnim() != GAME_OVER){
 		ship->drawShip(prog, MV);
 	}
 

@@ -17,6 +17,7 @@
 #define MAX_DIR_VEL 0.8f
 #define MAX_ROLL M_PI_4
 
+extern int camType;
 extern double tGlobal;
 extern double score;
 extern bool drawBoundingBox;
@@ -68,6 +69,7 @@ class Ship: public Shape
 
         void drawExplosion(std::shared_ptr<MatrixStack> &P, std::shared_ptr<MatrixStack> &MV, int width, int height, 
             std::shared_ptr<Texture> &alphaTex, std::shared_ptr<Program> &prog);
+        glm::mat4 generateEMatrix();
 
     private:
         glm::vec3 p_prev; // The previous position of the ship
@@ -77,7 +79,6 @@ class Ship: public Shape
         float yaw = 0.0f;
         int currAnim = NONE;
         
-        glm::mat4 generateEMatrix();
         void processKeys(bool keyPresses[256]);
         void setKeyframes(glm::vec3 p, int animType);
 

@@ -123,7 +123,7 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	MV->pushMatrix();
 	applyMVTransforms(MV);
 
-	// Below, we undo the translation to avoid the ship from moving past the camera
+	// Below, we undo the translation to prevent the ship from moving past the camera
 	if (currAnim == LEFT_ROLL || currAnim == RIGHT_ROLL){
 		MV->translate(-1.0f * generateEMatrix()[3]);
 	}
@@ -139,7 +139,9 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 	glm::vec3 col = getCol();
 	glUniform3f(prog->getUniform("kd"), col.r, col.g, col.b);
 	
-	this->draw(prog);
+	if (camType != 2){
+		this->draw(prog);
+	}
 
 	MV->popMatrix();
 
