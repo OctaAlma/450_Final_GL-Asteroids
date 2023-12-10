@@ -25,6 +25,7 @@ bool wPressed, aPressed, dPressed, sPressed;
 
 // The higher the factor, the more distance the rolls will cover
 float factor = 3.0f; 
+float unit = 0.0f;
 
 std::vector<std::shared_ptr<ShipKeyframe> > keyframes;
 vector<pair<float,float> > usTable; // A table containing pairs of (u, s)
@@ -108,12 +109,12 @@ void Ship::drawShip(const std::shared_ptr<Program> prog, std::shared_ptr<MatrixS
 		glm::mat4 R = glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0, 1, 0));		
 		
 		if (currAnim == LEFT_ROLL){
-			p_prev += glm::vec3(R * glm::vec4(factor * UNIT, 0.0f, 0.0f, 0.0f));
-			p += glm::vec3(R * glm::vec4(factor * UNIT, 0.0f, 0.0f, 0.0f));
+			p_prev += glm::vec3(R * glm::vec4(factor * unit, 0.0f, 0.0f, 0.0f));
+			p += glm::vec3(R * glm::vec4(factor * unit, 0.0f, 0.0f, 0.0f));
 		}
 		else if (currAnim == RIGHT_ROLL){
-			p_prev += glm::vec3(R * glm::vec4(factor * -UNIT, 0.0f, 0.0f, 0.0f));
-			p += glm::vec3(R * glm::vec4(factor * -UNIT, 0.0f, 0.0f, 0.0f));
+			p_prev += glm::vec3(R * glm::vec4(factor * -unit, 0.0f, 0.0f, 0.0f));
+			p += glm::vec3(R * glm::vec4(factor * -unit, 0.0f, 0.0f, 0.0f));
 		}
 
 		currAnim = NONE;
@@ -369,6 +370,7 @@ void buildTable()
 // NOTE: THE QUATERNION ROTATIONS HAVE NOT YET BEEN SET
 void Ship::setKeyframes(glm::vec3 p, int animType){
 	glm::vec3 xAxis = glm::vec3(1, 0, 0);
+	unit = (2.0f * glm::length(v) + 1.0f) * UNIT / 2.0f;
 
 	switch(animType){
 		case (NONE):{
@@ -418,23 +420,24 @@ void Ship::setKeyframes(glm::vec3 p, int animType){
 			keyframes.at(1)->setPos(glm::vec3(0, 0, 0));
 			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, rotAxis));
 
-			// Control frame at 1/3 of the way there. Rotated about the Z axis by PI/4
-			keyframes.at(2)->setPos(glm::vec3(factor * UNIT/4.0f, 0, 0));
+			// Control frame at 1/4 of the way there. Rotated about the Z axis by PI/4
+			keyframes.at(2)->setPos(glm::vec3(factor * unit/4.0f, 0, 0));
 			keyframes.at(2)->setQuat(glm::angleAxis(5.0f * (float)M_PI_4, rotAxis));
 
-			// Control frame at 1/2 of the way there. Rotates about the Z axis by PI
-			keyframes.at(3)->setPos(glm::vec3(factor * UNIT/2.0f, 0, 0));
+			// Control frame at 2/4 of the way there. Rotates about the Z axis by PI
+			keyframes.at(3)->setPos(glm::vec3(factor * unit/2.0f, 0, 0));
 			keyframes.at(3)->setQuat(glm::angleAxis((float)M_PI, rotAxis));
 
-			// Control frame at 2/3 of the way there. Rotated on the Z axis by 5PI/4
-			keyframes.at(4)->setPos(glm::vec3(factor * 3.0f * UNIT/4.0f, 0, 0));
+			// Control frame at 3/4 of the way there. Rotated on the Z axis by 5PI/4
+			keyframes.at(4)->setPos(glm::vec3(factor * 3.0f * unit/4.0f, 0, 0));
 			keyframes.at(4)->setQuat(glm::angleAxis((float)M_PI_4, rotAxis));
 
 			// Control frame at the position of the ship translated by UNITS in the x axis
-			keyframes.at(5)->setPos(glm::vec3(factor * UNIT, 0, 0));
+			keyframes.at(5)->setPos(glm::vec3(factor * unit, 0, 0));
 			keyframes.at(5)->setQuat(glm::angleAxis(0.0f, rotAxis));
+
 			// Another control frame at the position of the ship translated by UNITS in the x axis
-			keyframes.at(6)->setPos(glm::vec3(factor * UNIT, 0, 0));
+			keyframes.at(6)->setPos(glm::vec3(factor * unit, 0, 0));
 			keyframes.at(6)->setQuat(glm::angleAxis(0.0f, rotAxis));
 			break;
 		}
@@ -451,22 +454,22 @@ void Ship::setKeyframes(glm::vec3 p, int animType){
 			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, rotAxis));
 
 			// Control frame at 1/3 of the way there. Rotated about the Z axis by PI/4
-			keyframes.at(2)->setPos(glm::vec3(factor * -UNIT/4.0f, 0, 0));
+			keyframes.at(2)->setPos(glm::vec3(factor * -unit/4.0f, 0, 0));
 			keyframes.at(2)->setQuat(glm::angleAxis((float)M_PI_4, rotAxis));
 
 			// Control frame at 1/2 of the way there. Rotates about the Z axis by PI
-			keyframes.at(3)->setPos(glm::vec3(factor * -UNIT/2.0f, 0, 0));
+			keyframes.at(3)->setPos(glm::vec3(factor * -unit/2.0f, 0, 0));
 			keyframes.at(3)->setQuat(glm::angleAxis((float)M_PI, rotAxis));
 
 			// Control frame at 2/3 of the way there. Rotated on the Z axis by 5PI/4
-			keyframes.at(4)->setPos(glm::vec3(factor * -3.0f * UNIT/4.0f, 0, 0));
+			keyframes.at(4)->setPos(glm::vec3(factor * -3.0f * unit/4.0f, 0, 0));
 			keyframes.at(4)->setQuat(glm::angleAxis(5.0f * (float)M_PI_4, rotAxis));
 
 			// Control frame at the position of the ship translated by UNITS in the x axis
-			keyframes.at(5)->setPos(glm::vec3(factor * -UNIT, 0, 0));
+			keyframes.at(5)->setPos(glm::vec3(factor * -unit, 0, 0));
 			keyframes.at(5)->setQuat(glm::angleAxis(0.0f, rotAxis));
 			// Another control frame at the position of the ship translated by UNITS in the x axis
-			keyframes.at(6)->setPos(glm::vec3(factor * -UNIT, 0, 0));
+			keyframes.at(6)->setPos(glm::vec3(factor * -unit, 0, 0));
 			keyframes.at(6)->setQuat(glm::angleAxis(0.0f, rotAxis));
 			break;
 		}
