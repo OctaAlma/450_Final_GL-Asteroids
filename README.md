@@ -30,7 +30,7 @@ Once installed, you must define the following environment variables:
 - ``-a X``   - Sets the number of asteroids to ``X``
 - ``-l X``   - Sets the number of lives to ``X``
 - ``-b``     - Turns on bounding boxes around objects
-- ``-f``    - Turns on the axis frame
+- ``-f``     - Turns on the axis frame
 - ``-g``     - Turns on the grid
 - ``-t``     - Defaults to top-down cam
 - ``-fp``    - Defaults to first-person cam

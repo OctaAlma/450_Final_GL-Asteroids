@@ -18,6 +18,13 @@ CSCE 450H: Computer Animation Fall 2023
         <h3 class="title">HYPERSPACE • THRUST CONTROL • MANEUVERS</h3>
 
         <div class="line"></div>
+
+        <div class="videoContainer">
+            <h4 class="title">PRESENTATION VIDEO</h4>
+            <iframe class="video" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
+        </div>
+
+        <div class="line"></div>
     
         <div class="content">
             <h4 class="title">ANIMATION TECHNIQUES</h4>
@@ -26,14 +33,14 @@ CSCE 450H: Computer Animation Fall 2023
                 <li class="desc"><b>Dynamic Keyframes • </b> 
                     This core goal of the project was to implement dynamic keyframing. 
                     In assignment 1, we implemented keyframes that were set at compile time. 
+                    In my project, keyframed animations can be triggered by the press of a button. 
                     The final position of these keyframes depend the position and velocity of the ship at the moment the animation was triggered. 
-                    These factors will affect the time it takes to complete the animation, as well as the position of the ship once the animation is finished.
                 </li>
             </ul>
                 
-                <div class="gif">
-                    <img src="./dynamic_keyframes.gif">
-                </div>
+            <div class="gif">
+                <img src="./dynamic_keyframes.gif">
+            </div>
             
             <ul>
                 <li class="desc"><b>Particle Effects • </b>
@@ -59,11 +66,15 @@ CSCE 450H: Computer Animation Fall 2023
                     Continuous sphere-to-sphere collision detection is performed for the spaceship and all of the asteroids. 
                     Laser beams are represented internally by line segments, and line-sphere intersections are performed to check if they collide with any asteroids while they are "active".  
                     <br><br>
-                    <div class="screenshot">
-                        <img src="./bounding_boxes.png">
-                    </div>    
-                    Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
-                </li>
+                </li>                
+            </ul>
+
+            <div class="screenshot">
+                <img src="./bounding_boxes.png">
+            </div> 
+            
+            <ul class="desc">
+                Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
             </ul>
             
             <div class="gif">
@@ -95,6 +106,14 @@ CSCE 450H: Computer Animation Fall 2023
             <h4 class="title">RESOURCES</h4>
             
             <ul>
+                <li class="desc">The following libraries were used for the development of this project: </li>
+                <ul>
+                    <li> <b>CMAKE</b> for "out-of-source" build compilation. Available <a href="https://cmake.org/download/">here</a>. </li>
+                    <li> <b>GLM</b> for useful data structures and OpenGL-like syntax. Available <a href="https://github.com/g-truc/glm">here</a>. </li>
+                    <li> <b>GLFW</b> for creating windows and input detection. Available <a href="https://www.glfw.org">here</a>. </li>
+                    <li> <b>GLEW</b> for OpenGL extension loading. Available <a href="https://glew.sourceforge.net">here</a>. </li>
+                    <li> <b>EIGEN3</b> to map vector values to a specific location in memory. Available <a href="https://eigen.tuxfamily.org/index.php?title=Main_Page">here</a>. </li>
+                </ul>
                 <li class="desc">Spaceship model was obtained from <a href="https://sketchfab.com/3d-models/low-poly-space-ship-587941c9c11742c6b82dfb99e7b210b9">Sketchfab</a>.</li>
                 <li class="desc">Asteroid model was obtained from <a href="https://free3d.com/3d-model/-asteroid--962525.html">Free3D</a>.</li>
                 <li class="desc">Line-segment-sphere collision detection code was based off of a guide from <a href="https://www.baeldung.com/cs/circle-line-segment-collision-detection">Baelung</a>.</li>
@@ -107,16 +126,6 @@ CSCE 450H: Computer Animation Fall 2023
         <div class="content">
             <h4 class="title"><a href="https://github.com/OctaAlma/450-Final">DOWNLOAD</a></h4>
         </div>
-
-        <!-- <kbd>
-            // Testing code snippets <br>
-            #include "iostream" <br>
-            using namespace std; <br>
-            <br>
-            int main(){ <br>
-            cout << "hello world!" << endl<br>
-            }<br>
-        </kbd> -->
 
         <footer class="title">
             PROGRAM CODE IS OPEN SOURCE AND FREE TO USE.

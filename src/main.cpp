@@ -332,6 +332,7 @@ void checkBeamCollisions(){
 	std::vector<std::shared_ptr<Asteroid> > newChildren;
 
 	if (asteroids.size() == 0 && ship->getCurrAnim() != GAME_OVER){
+		cout << " ====== YOU WIN! ====== \n";
 		ship->gameOver(RESOURCE_DIR);
 		score += 2500 * numLives;
 	}

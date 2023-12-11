@@ -557,7 +557,7 @@ void Ship::drawExplosion(std::shared_ptr<MatrixStack> &P, std::shared_ptr<Matrix
 	MV->pushMatrix();
 	applyMVTransforms(MV);
 	if (!e->isAlive()){ 
-		cout << "FINAL SCORE: " << std::max(score - std::min(ceil(tGlobal), 2000.0), 0.0) << endl;
+		cout << "  - FINAL SCORE: " << std::max(score - std::min(ceil(tGlobal), 2000.0), 0.0) << endl;
 		exit(0); 
 	}
 	e->draw(P, MV, width, height, alphaTex, prog);
