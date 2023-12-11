@@ -390,15 +390,15 @@ void Ship::setKeyframes(glm::vec3 p, int animType){
 			keyframes.at(1)->setQuat(glm::angleAxis(0.0f, xAxis));
 
 			// Control point that is one unit on top and one unit in front. (Ship facing upward)
-			keyframes.at(2)->setPos(glm::vec3(0.0f, UNIT / 2.0f, UNIT / 2.0f));
+			keyframes.at(2)->setPos(glm::vec3(0.0f, unit / 2.0f, unit / 2.0f));
 			keyframes.at(2)->setQuat(glm::angleAxis(-(float)M_PI_2, xAxis));
 
 			// Control point at the top (Upside down orientation)
-			keyframes.at(3)->setPos(glm::vec3(0.0f, UNIT, 0.0f));
+			keyframes.at(3)->setPos(glm::vec3(0.0f, unit, 0.0f));
 			keyframes.at(3)->setQuat(glm::angleAxis(-(float)M_PI, xAxis));
 
 			// Control point that is one unit on top and one unit behind. (Ship facing downward)
-			keyframes.at(4)->setPos(glm::vec3(0.0f, UNIT / 2.0f, -UNIT / 2.0f));
+			keyframes.at(4)->setPos(glm::vec3(0.0f, unit / 2.0f, -unit / 2.0f));
 			keyframes.at(4)->setQuat(glm::angleAxis(-(float)M_PI -(float)M_PI_2, xAxis));
 
 			// Control point that is the current position. Same orientation
