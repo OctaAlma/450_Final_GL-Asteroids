@@ -60,7 +60,7 @@ code{
 
 body{
     background-color: #121212;
-    /* background-image: url('./space.png'); */
+    background-image: url('./space.png');
     background-size: 100%;
     background-repeat: repeat;
     background-attachment: fixed;
