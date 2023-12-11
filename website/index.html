@@ -26,14 +26,13 @@ CSCE 450H: Computer Animation Fall 2023
                 <li class="desc"><b>Dynamic Keyframes • </b> 
                     This core goal of the project was to implement dynamic keyframing. 
                     In assignment 1, we implemented keyframes that were set at compile time. 
-                    The position of these keyframes depend on factors such as the position and velocity of the ship at the moment the animation was triggered. 
+                    The final position of these keyframes depend the position and velocity of the ship at the moment the animation was triggered. 
                     These factors will affect the time it takes to complete the animation, as well as the position of the ship once the animation is finished.
                 </li>
             </ul>
                 
-                <div class="screenshot">
-                    <img src="./test.png">
-                    <img src="./test.png">
+                <div class="gif">
+                    <img src="./dynamic_keyframes.gif">
                 </div>
             
             <ul>
@@ -45,21 +44,31 @@ CSCE 450H: Computer Animation Fall 2023
                     Particles are also created whenever the asteroids are destroyed. An "explosion" can be seen following the collision of a beam and an asteroid.
                     If the ship collides with an asteroid and it has no more lives left, the ship will explode as well.
                     <br><br>
-                    My explosion system was adapted from the <code>Particle</code> class provided for <a href="https://people.engr.tamu.edu/sueda/courses/CSCE450/2023F/labs/L06/index.html">Lab 6</a>, which uses <code>GL_POINTS</code> drawn as "billboarded" quads.
+                    My explosion system was adapted from the <code>Particle</code> class provided for <a href="https://people.engr.tamu.edu/sueda/courses/CSCE450/2023F/labs/L06/index.html">Lab 6</a>, which uses <code>GL_POINTS</code> drawn as "billboarded" quads with alpha blending.
                 </li>
-                
+            </ul>
+
+            <div class="gif">
+                <img src="./particle-effects.gif">
+            </div>
+
+            <ul>
                 <li class="desc"><b>Collision Detection • </b>
                     Collisions are managed through bounding spheres for both the asteroids and the spaceship. 
                     When initialized, each asteroid has a predetermined radius that is used to calculate the size of its hitbox. 
-                    Continuous sphere-to-sphere collisions are performed for the spaceship and all of the asteroids. 
-                    Laser beams are represented internally by line segments, and line intersections are performed to check if they collide with any asteroids while they are "active".  
+                    Continuous sphere-to-sphere collision detection is performed for the spaceship and all of the asteroids. 
+                    Laser beams are represented internally by line segments, and line-sphere intersections are performed to check if they collide with any asteroids while they are "active".  
                     <br><br>
                     <div class="screenshot">
-                        <img src="./BoundingBoxes.png">
+                        <img src="./bounding_boxes.png">
                     </div>    
                     Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
                 </li>
             </ul>
+            
+            <div class="gif">
+                <img src="./ship-death.gif">
+            </div>
         </div>
 
         <div class="line"></div>
@@ -72,9 +81,11 @@ CSCE 450H: Computer Animation Fall 2023
                 <li class="desc">The <b>Q</b> and <b>E</b> keys trigger left and right barrel-rolls, respectively.</li>
                 <li class="desc">The <b>SPACEBAR</b> key triggers a somersault.</li>
                 <li class="desc">The <b>J</b> key can be used to fire a plasma beam. Use this to destroy the asteroids!</li>
-                <li class="desc">The <b>V</b> key can be used to switch between camera views.</li>
+                <li class="desc">The <b>V</b> key can be used to switch between third-person, top-down, and first-person cameras.</li>
                 <li class="desc">The <b>P</b> key can be used to pause the game.</li>
                 <li class="desc">The <b>B</b> key can be used to toggle bounding spheres.</li>
+                <li class="desc">The <b>F</b> key can be used to increase the field of fiew.</li>
+                <li class="desc">The <b>G</b> key can be used to decrease the field of view.</li>
             </ul>
         </div>
 
