@@ -36,6 +36,7 @@
 }
 
 .gif img{
+    filter: contrast(125%);
     border-radius: 10px;
     border: 1px solid white;
     max-height: 400px;
