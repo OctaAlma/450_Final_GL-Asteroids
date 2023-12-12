@@ -34,10 +34,10 @@ CSCE 450H: Computer Animation Fall 2023
 
             <ul>
                 <li class="desc"><b>Dynamic Keyframes • </b> 
-                    This core goal of the project was to implement dynamic keyframing. 
+                    The core goal of the project was to implement dynamic keyframing. 
                     In assignment 1, we implemented keyframes that were set at compile time. 
                     In my project, keyframed animations can be triggered by the press of a button. 
-                    The the positions of each keyframe depend the position and velocity of the ship at the moment the animation was triggered. 
+                    The the positions of the keyframes are functions of the position and velocity of the ship at the moment the animation was triggered. 
                 </li>
             </ul>
                 
@@ -47,11 +47,11 @@ CSCE 450H: Computer Animation Fall 2023
             
             <ul>
                 <li class="desc"><b>Particle Effects • </b>
-                    I also decided to implement a particle system to better convey the actions and events of the game. 
+                    I also decided to implement a particle system to better convey actions and events in the game. 
                     Particles are generated whenever the ship accelerates in the forward direction. 
                     As the particle approaches the end of its lifespan, its color transitions from a deep red to a light yellow.
                     <br><br>
-                    Particles are also created whenever the asteroids are destroyed. An "explosion" can be seen following the collision of a beam and an asteroid.
+                    Particles are also created whenever the asteroids are destroyed. A particle explosion can be seen following the collision of a beam and an asteroid.
                     If the ship collides with an asteroid and it has no more lives left, the ship will explode as well.
                     <br><br>
                     My explosion system was adapted from the <code>Particle</code> class provided for <a href="https://people.engr.tamu.edu/sueda/courses/CSCE450/2023F/labs/L06/index.html">Lab 6</a>, which uses <code>GL_POINTS</code> drawn as "billboarded" quads with alpha blending.
@@ -77,7 +77,8 @@ CSCE 450H: Computer Animation Fall 2023
             </div> 
             
             <ul class="desc">
-                Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes "damage" in the form of a life.
+                Whenever the hitbox of an asteroid overlaps with the hitbox of the spaceship, the spaceship either explodes or takes damage in the form of a life.
+                The ship will turn red to convey that it took damage.
             </ul>
             
             <div class="gif">
