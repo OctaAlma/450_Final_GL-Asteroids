@@ -5,7 +5,7 @@
 
 ## Description
 
-This was my final project for CSCE 450: Computer Animation. The requirement for honors student was implementing some topic beyond what was covered in class. I decided to extend on my knowledge of positional and rotational keyframing by implementing "dynamic" keyframes, which vary depending on the position and directional momentum of the object.
+This was my final project for CSCE 450: Computer Animation. The requirement for honors students was to implement some topic that was beyond what was covered in class. I decided to extend on my knowledge of positional and rotational keyframing by implementing "dynamic" keyframes, which vary depending on the position and directional momentum of the object.
 
 ![Demonstration of dynamic keyframes](./website/dynamic_keyframes.gif)
 
