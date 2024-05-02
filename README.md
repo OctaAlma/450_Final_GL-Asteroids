@@ -34,7 +34,7 @@ To compile the code, you will need the following libraries installed:
 - ``GLEW``, available [here](https://glew.sourceforge.net).
 - ``EIGEN3``, available [here](https://eigen.tuxfamily.org/index.php?title=Main_Page).
 
-Please visit Dr. Sueda's compilation instructions [here](https://people.engr.tamu.edu/sueda/courses/CSCE441/2022S/labs/L00/index.html#WIN).
+Please visit Dr. Sueda's setup instructions [here](https://people.engr.tamu.edu/sueda/courses/CSCE441/2022S/labs/L00/index.html#WIN).
 
 
 <!--
